@@ -1,53 +1,50 @@
-# DesignUIKit Package Guide For AI Agents
+# DesignUIKit AI Working Agreement
 
+## Metadata
+- Owner: DesignUIKit maintainers
+- Last Reviewed: 2026-10-15
+- Layer: System
 ## Scope
-- This guide applies to the entire package at repository root.
-- Use it as the entry point, then follow the module-specific guides below.
-- `Archived/` folders under sources are excluded in `Package.swift`; do not use archived APIs for new code.
+- Applies repository-wide; module contracts live in `docs/modules/`.
+- This is the single agent entry point; do not add nested AGENTS files.
 
-## Package Purpose
-- Provide a modular UI toolkit for Apple platforms, split into:
-  - `DesignCore`: shared utilities, builders, preference wrappers, attributed string helpers.
-  - `DesignExts`: focused UIKit extensions (color, layer, size helpers).
-  - `DesignExternal`: wrappers for externally re-exported dependencies.
-  - `DesignUIKit`: primary UIKit and SwiftUIKit component layer.
-  - `DesignCombineUIKit`: Combine bindings for UIKit components.
-  - `DesignRxUIKit`: RxSwift/RxCocoa bindings for UIKit components.
+## Current User Story
+- As a toolkit consumer, I want composable UIKit components and selective updates with stable public APIs.
 
-## Module Guides
-- Core: [Sources/Core/AGENTS.md](Sources/Core/AGENTS.md)
-- Exts: [Sources/Exts/AGENTS.md](Sources/Exts/AGENTS.md)
-- External: [Sources/ExternalPackages/AGENTS.md](Sources/ExternalPackages/AGENTS.md)
-- UIKit: [Sources/UIKit/AGENTS.md](Sources/UIKit/AGENTS.md)
-- UIKit+Combine: [Sources/UIKit+Combine/AGENTS.md](Sources/UIKit+Combine/AGENTS.md)
-- UIKit+Rx: [Sources/UIKit+Rx/AGENTS.md](Sources/UIKit+Rx/AGENTS.md)
+## Acceptance Criteria
+- [ ] Preserve module boundaries and documented compatibility contracts.
+- [ ] Keep maintained documentation reachable from [documentation index](docs/00_INDEX.md).
+- [ ] Verify changes and update progress before completing a task.
 
-## Dependency Direction
-- Keep dependency flow one-way:
-  - `DesignCore` -> foundation utilities only
-  - `DesignExts` depends on `DesignCore`
-  - `DesignUIKit` depends on `DesignCore`, `DesignExts`, `DesignExternal`
-  - `DesignCombineUIKit` and `DesignRxUIKit` extend `DesignUIKit`; do not move reactive concerns into base UIKit module
-- Avoid introducing circular dependencies between targets.
+## Required Workflow
+- [ ] Read [documentation index](docs/00_INDEX.md) and the relevant module scope before editing.
+- [ ] For source changes, read `docs/11_ARCHITECTURE.md` and `docs/12_DEPENDENCIES.md`.
+- [ ] Inspect existing implementation and tests; preserve unrelated changes.
+- [ ] Use Markdown checkboxes for plans, tasks, and acceptance criteria.
+- [ ] Update relevant docs and `docs/09_STATUS.md` as work progresses.
+- [ ] Validate the changed behavior or documents and review the final diff.
 
-## MVVM Intention For Reactive Base Blocks
-- `DesignRxUIKit` and `DesignCombineUIKit` base blocks define architecture contracts, not feature business logic.
-- Use-case protocols in `Sources/UIKit+Rx/BaseBlocks` and `Sources/UIKit+Combine/BaseBlocks` are blueprint interfaces to support MVVM composition.
-- ViewModels may coordinate multiple use cases (one per business intent).
-- Keep concrete use-case implementations in feature/domain modules and inject them into ViewModels.
+## Out of Scope
+- Feature/domain business logic and new use of excluded `Archived/` APIs.
 
-## Cross-Package Guardrails
-- Preserve source compatibility for public API unless a breaking change is explicitly requested.
-- Keep platform support aligned with package settings (`iOS`, `tvOS`; no macOS requirement).
-- Keep safety behavior intact for known crash-sensitive areas:
-  - child view-controller containment in `FViewController`
-  - section/item bounds in list/collection adapters and layout providers
-- Prefer adding behavior in extensions or new types over changing established core semantics.
-- When changing behavior, add or update tests in the matching `Tests/*` module.
+## Implementation Boundaries
+- Keep reactive integrations in DesignCombineUIKit and DesignRxUIKit.
+- Keep concrete use cases in consumer feature/domain modules and inject them.
+- Prefer extensions or new types over changing established core semantics.
+
+## Do Not Break
+- Public source compatibility unless a breaking change is explicitly requested.
+- iOS/tvOS support, child-controller containment, and collection bounds safety.
+- Module-specific contracts recorded in [module scopes](docs/modules/00_INDEX.md).
+
+## Documentation Rules
+- Maintained guidance covers one concern per file and stays at 50 lines or fewer.
+- Distinguish implemented behavior, proposals, and verification still pending.
 
 ## Validation
-- Preferred (full package on Apple platforms):
-  - `xcodebuild test -scheme DesignUIKit-Package -destination 'platform=iOS Simulator,id=<SIM_ID>'`
-  - `xcodebuild test -scheme DesignUIKit-Package -destination 'platform=tvOS Simulator,id=<SIM_ID>'`
-- Fast local sanity (host runtime only, may not cover UIKit runtime paths):
-  - `swift test`
+- Follow [validation guide](docs/14_TESTING.md); add matching module tests for behavior changes.
+- Documentation-only work requires link, scope, and diff checks.
+
+## Precedence
+1. Explicit user instructions take precedence.
+2. Root architecture constraints govern module scope documents.
