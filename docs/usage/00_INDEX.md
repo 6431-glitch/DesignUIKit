@@ -12,6 +12,9 @@
 - [Child controllers](07_CHILD_CONTROLLERS.md): containment through FViewController.
 - [Custom layout](08_CUSTOM_LAYOUT.md): avoid competing parent pins.
 
+## Update Reference
+- [Choose the smallest update](09_UPDATES.md): timing, lifecycle, and ownership.
+
 ## Source Version
 - These guides describe refactor/main, including unreleased 1.1.0 improvements.
 - Use the local checkout for these examples until a release containing them exists.

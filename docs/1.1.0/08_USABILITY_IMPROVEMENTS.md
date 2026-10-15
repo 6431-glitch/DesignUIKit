@@ -19,10 +19,10 @@
 - [x] Typecheck user-guide Swift examples against the actual built package modules.
 
 ## Phase U3 — Predictable Update Guidance
-- [ ] Add a decision table for mutate, bind, updateItems, updateContent, and reload.
-- [ ] Explain immediate appearance versus deferred/coalesced layout changes.
-- [ ] Document component-specific reload behavior and FView's one-time construction.
-- [ ] Clarify named versus unkeyed binding lifetime and modifier precedence.
+- [x] Add a decision table for mutate, bind, updateItems, updateContent, and reload.
+- [x] Explain immediate appearance versus deferred/coalesced layout changes.
+- [x] Document component-specific reload behavior and FView's one-time construction.
+- [x] Clarify named versus unkeyed binding lifetime and modifier precedence.
 
 ## Phase U4 — Actionable Diagnostics
 - [ ] Add a structured keyed-update Result API alongside the existing Bool API.

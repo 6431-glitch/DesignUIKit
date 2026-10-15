@@ -42,7 +42,7 @@ FVStack(spacing: 8) {
 - [Getting started](docs/usage/00_INDEX.md): install, compose, and update your first screen.
 - [Index](docs/00_INDEX.md): architecture, module scopes, testing, and progress.
 - [1.1.0 improvements](docs/1.1.0/00_INDEX.md): implementation and release acceptance.
-- [Selective updates](docs/1.1.0/03_UPDATE_CONTRACTS.md): update scope and keyed stacks.
+- [Choosing updates](docs/usage/09_UPDATES.md): mutation, layout, content, and reload.
 - [Binding ownership](docs/1.1.0/04_BINDINGS.md): named subscriptions and cancellation.
 - [Contributing agreement](AGENTS.md).
 

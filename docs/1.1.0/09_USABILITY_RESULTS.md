@@ -17,8 +17,13 @@
 - Loading visibility uses intrinsic sizing, avoiding a required fixed-height hiding conflict.
 - Reusable-list snapshots reload changed retained rows; custom layout disables parent pins.
 
+## Phase U3
+- [x] Add an update decision table and timing/lifecycle/ownership guidance.
+- Separate property mutation, keyed data updates, manual content, and body reconstruction.
+- Existing component and binding contracts remain unchanged.
+
 ## Remaining Phases
 - [x] U2: practical cookbook and example validation.
-- [ ] U3: predictable update/lifecycle guidance.
+- [x] U3: predictable update/lifecycle guidance.
 - [ ] U4: actionable diagnostics and full regression suite.
 - [ ] tvOS validation when Xcode can select its platform destination.
