@@ -11,6 +11,7 @@
 - [Validation results](05_RESULTS.md): test destinations, workload counts, and limits.
 - [Second improvement plan](06_CODE_QUALITY_IMPROVEMENTS.md): internal readability follow-up.
 - [Second-pass results](07_CODE_QUALITY_RESULTS.md): phase validation and remaining checks.
+- [Ease-of-use plan](08_USABILITY_IMPROVEMENTS.md): onboarding, recipes, updates, and diagnostics.
 - [Original findings](../refactor/01_FAST_VIEW.md): static inspection evidence.
 
 ## Objective

@@ -1,6 +1,7 @@
 # Project Status
 
 ## Current Work
+- Third improvement pass: plan drafted; U1 onboarding is starting.
 - Date: 2026-10-15; branch: refactor/main.
 - First-pass phases 1–4 and second-pass phases A–D are implemented and iOS-validated.
 - Documentation commit 00912ec is merged locally into release/1.1.0.

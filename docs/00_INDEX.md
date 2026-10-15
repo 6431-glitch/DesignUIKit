@@ -16,6 +16,7 @@ Read [AGENTS.md](../AGENTS.md) first, then route to the relevant concern.
 - [Team workflow](07_TEAM_WORKFLOW.md): task execution and handoff.
 - [Status](09_STATUS.md): current branch scope and validation evidence.
 - [Second improvement plan](1.1.0/06_CODE_QUALITY_IMPROVEMENTS.md): modifier, layout, and keyed-state readability.
+- [Ease-of-use plan](1.1.0/08_USABILITY_IMPROVEMENTS.md): third improvement pass.
 - [Fast View refactor](refactor/01_FAST_VIEW.md): selective-update priorities.
 
 ## Routing
