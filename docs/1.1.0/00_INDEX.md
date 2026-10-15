@@ -1,7 +1,7 @@
 # Version 1.1.0 Library Improvements
 
 ## State
-- Phase commits 1–1 validated on refactor/main; later phases remain pending.
+- Phase commits 1–2 validated on refactor/main; later phases remain pending.
 - Release baseline: release/1.1.0 created from local master.
 - Documentation branch: refactor/docs-and-agent-guidance; implementation: refactor/main.
 - [Improvement plan](01_LIBRARY_IMPROVEMENTS.md): scope, phases, and contracts.
@@ -17,7 +17,7 @@ predictable, and safe for existing consumers.
 
 ## Phase Progress
 - [x] Phase 1: explicit updates and reload fixes; 22 UIKit tests passed on iOS.
-- [ ] Phase 2: stable modifiers, constraints, and layer configuration; iOS passed.
+- [x] Phase 2: stable modifiers, constraints, and layer configuration; iOS passed.
 - [ ] Phase 3: keyed incremental children and reactive adapters; iOS passed.
 - [ ] Phase 4: binding lifetime and consumer documentation; iOS passed.
 

@@ -185,6 +185,11 @@ import SnapKit
     
     /// Flag indicating whether to clear all modifiers.
     var clearModifiers: Bool = false
+    var modifierRestorations: [() -> Void] = []
+    var effectiveModifiers: [FModifier] {
+        let inherited = clearModifiers ? [] : (owner?.superview?.configuration?.effectiveModifiers ?? [])
+        return inherited + modifiers
+    }
     
     /// The width constraint value.
     public var width: CGFloat? { didSet { invalidateLayout() } }
@@ -196,10 +201,10 @@ import SnapKit
     public var offset: CGSize = .zero { didSet { invalidateLayout() } }
     
     /// The shadow configuration to apply.
-    public var shadow: CALayer.ShadowConfiguration? { didSet { owner?.setNeedsLayout() } }
+    public var shadow: CALayer.ShadowConfiguration? { didSet { layersNeedUpdate = true; owner?.setNeedsLayout() } }
     
     /// The shape style to apply to the component, such as circle or rounded rectangle.
-    public var shape: FShape? { didSet { owner?.setNeedsLayout() } }
+    public var shape: FShape? { didSet { layersNeedUpdate = true; owner?.setNeedsLayout() } }
     
     /// The background color to apply to the component.
     public var backgroundColor: UIColor = .clear { didSet { owner?.backgroundColor = backgroundColor } }
@@ -260,10 +265,7 @@ import SnapKit
     /// Called before the component moves to a new superview.
     /// - Parameter newSuperview: The new superview the component will move to.
     func willMove(toSuperview newSuperview: UIView?) {
-        guard let newSuperview = newSuperview as? FBodyComponent else { return }
-        if !clearModifiers {
-            modifiers = (newSuperview.configuration?.modifiers ?? []) + modifiers
-        }
+        restoreModifiers()
     }
 
     /// Called after the component has moved to a superview, applying layout and appearance configurations.
@@ -273,7 +275,7 @@ import SnapKit
     public func didMoveToSuperview(_ superview: UIView?, with target: FBodyComponent) {
         owner = target
         guard superview != nil else { return }
-        modifiers.forEach { $0.body(target) }
+        applyModifiers(to: target)
         applyAppearance()
         invalidateLayout()
         applyLayout()
@@ -285,6 +287,10 @@ import SnapKit
         owner?.alpha = opacity
     }
 
+    private var layersNeedUpdate = true
+    private var lastLayerBounds: CGRect?
+    private var hadShape = false
+    private var hadShadow = false
     var layoutNeedsUpdate = true
     var customLayoutNeedsUpdate = true
     var isLayoutManagedByContainer = false { didSet { invalidateLayout() } }
@@ -310,6 +316,19 @@ import SnapKit
     /// - Parameter target: The view to update.
     public func updateLayers(for target: UIView) {
         applyLayout()
+        defer { layerConfiguration?(target) }
+        guard layersNeedUpdate || lastLayerBounds != target.bounds else { return }
+        layersNeedUpdate = false
+        lastLayerBounds = target.bounds
+        if shape == nil, hadShape {
+            target.layer.cornerRadius = 0
+            target.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
+                                         .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            target.clipsToBounds = false
+        }
+        if shadow == nil, hadShadow { target.layer.removeShadow() }
+        hadShape = shape != nil
+        hadShadow = shadow != nil
         var shadowCornerRadius: CGFloat = 0
         var shadowCorners: UIRectCorner = .allCorners
         if let shape {
@@ -317,6 +336,8 @@ import SnapKit
             apply {
                 switch shape {
                 case .circle:
+                    target.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
+                                                 .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
                     shadowCornerRadius = min(target.bounds.width, target.bounds.height) / 2
                     target.layer.cornerRadius = shadowCornerRadius
                 case .roundedRectangle(let cornerRadius, let corners):
@@ -356,7 +377,6 @@ import SnapKit
                 )
             }
         }
-        layerConfiguration?(target)
     }
     
     /// Applies the given animation configuration when executing the provided animation block.

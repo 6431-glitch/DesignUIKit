@@ -15,12 +15,12 @@
 - [x] Coalesce repeated layout invalidations without rebuilding children.
 
 ## Phase 2 — Stable Configuration and Layout
-- [ ] Separate locally declared modifiers from inherited parent modifiers.
-- [ ] Recompute inherited styles on reparenting without accumulating modifiers.
-- [ ] Define modifier mutation/replacement semantics and test the chosen contract.
-- [ ] Track toolkit-owned constraints; update constants or replace affected rules.
-- [ ] Define priority rules for explicit sizing, parent edges, and stack layout.
-- [ ] Audit shape/shadow changes and avoid redundant work during layout.
+- [x] Separate locally declared modifiers from inherited parent modifiers.
+- [x] Recompute inherited styles on reparenting without accumulating modifiers.
+- [x] Define modifier mutation/replacement semantics and test the chosen contract.
+- [x] Track toolkit-owned constraints; update constants or replace affected rules.
+- [x] Define priority rules for explicit sizing, parent edges, and stack layout.
+- [x] Audit shape/shadow changes and avoid redundant work during layout.
 
 ## Phase 3 — Incremental Dynamic Content
 - [ ] Add keyed stack updates with stable IDs and create/update closures.
