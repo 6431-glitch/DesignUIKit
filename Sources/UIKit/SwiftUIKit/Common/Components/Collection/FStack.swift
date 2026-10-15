@@ -18,7 +18,14 @@ public class FStack: BaseStackView, FComponent {
     public var customConfiguration: ((FStack) -> Void)?
     
     /// The list of components to be arranged in the stack view.
-    public var arrangedContents: FBody
+    public var arrangedContents: FBody {
+        didSet {
+            keyedViews.removeAll()
+            keyedItems.removeAll()
+        }
+    }
+    var keyedViews: [AnyHashable: FBodyComponent] = [:]
+    var keyedItems: [AnyHashable: Any] = [:]
     
     /// Initializes a stack view with a view builder closure to generate arranged content.
     /// - Parameters:

@@ -23,11 +23,11 @@
 - [x] Audit shape/shadow changes and avoid redundant work during layout.
 
 ## Phase 3 — Incremental Dynamic Content
-- [ ] Add keyed stack updates with stable IDs and create/update closures.
-- [ ] Create only inserted views, detach removed views, and move retained views.
-- [ ] Define duplicate-ID handling before exposing the API.
-- [ ] Preserve focused input, local state, and subscriptions for retained IDs.
-- [ ] Add opt-in Combine/Rx adapters while keeping existing bindings compatible.
+- [x] Add keyed stack updates with stable IDs and create/update closures.
+- [x] Create only inserted views, detach removed views, and move retained views.
+- [x] Define duplicate-ID handling before exposing the API.
+- [x] Preserve focused input, local state, and subscriptions for retained IDs.
+- [x] Add opt-in Combine/Rx adapters while keeping existing bindings compatible.
 
 ## Phase 4 — Binding Lifetime and Consumer Guidance
 - [ ] Define append versus replace semantics for repeated binding calls.

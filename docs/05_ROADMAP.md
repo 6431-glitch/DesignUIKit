@@ -8,7 +8,7 @@
 ## Version 1.1.0 Implementation
 - [x] Phase 1: Explicit content operations, reload fixes, and selective setters.
 - [x] Phase 2: Modifier restoration, constraint preservation, and layer updates.
-- [ ] Phase 3: Keyed stacks and opt-in reactive adapters.
+- [x] Phase 3: Keyed stacks and opt-in reactive adapters.
 - [ ] Phase 4: Named binding ownership/cancellation and consumer guidance.
 
 ## Release Gates
