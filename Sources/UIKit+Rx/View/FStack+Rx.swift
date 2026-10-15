@@ -32,12 +32,13 @@ public extension FStack {
     @discardableResult
     func bindItems<Item: Equatable, ID: Hashable, View: FBodyComponent>(
         to driver: Driver<[Item]>,
+        key: AnyHashable? = nil,
         id: KeyPath<Item, ID>,
         makeView: @escaping (Item) -> View,
         update: @escaping (View, Item) -> Void,
         onInvalidItems: (() -> Void)? = nil
     ) -> Self {
-        bind(to: driver) { stack, items in
+        bind(to: driver, key: key) { stack, items in
             if !stack.updateItems(items, id: id, makeView: makeView, update: update) {
                 onInvalidItems?()
             }

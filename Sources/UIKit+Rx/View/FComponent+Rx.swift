@@ -22,6 +22,13 @@ import RxCocoa
 
 /// Conforms all `UIView` instances to `Reactivable` using associated objects to manage the `DisposeBag`.
 extension UIView: Reactivable {
+    private static let keyedRxBindings = ObjectAssociation<StructWrapper<[AnyHashable: FRxBindingSlot]>>()
+
+    fileprivate var rxBindingSlots: [AnyHashable: FRxBindingSlot] {
+        get { Self.keyedRxBindings[self]?.value ?? [:] }
+        set { Self.keyedRxBindings[self] = .init(value: newValue) }
+    }
+
     static let disposeBag = ObjectAssociation<DisposeBag>()
     
     /// Lazily initializes and retrieves the associated `DisposeBag` for the view.
@@ -37,6 +44,12 @@ extension UIView: Reactivable {
 }
 
 public extension FComponent where Self: UIView, Self: Reactivable {
+    /// Cancels only the named binding. Other slots and the dispose bag survive.
+    func cancelRxBinding(for key: AnyHashable) {
+        let subscription = rxBindingSlots.removeValue(forKey: key)
+        subscription?.dispose()
+    }
+
     /// Binds a `Driver` to the component using a provided update closure.
     ///
     /// - Parameters:
@@ -51,14 +64,44 @@ public extension FComponent where Self: UIView, Self: Reactivable {
         error: ((Error) -> Void)? = nil,
         complete: (() -> Void)? = nil
     ) -> Self {
-        let localET = ErrorTracker()
-        disposeBag.insert {
-            publisher.trackError(localET).drive { [weak self] in
-                guard let self = self else { return }
-                next(self, $0)
-            } onCompleted: { complete?() }
-            localET.drive(onNext: error)
+        bind(to: publisher, key: nil, next: next, error: error, complete: complete)
+    }
+
+    /// Supplying a key replaces only that slot; nil retains append behavior.
+    @discardableResult func bind<Subject>(
+        to publisher: Driver<Subject>,
+        key: AnyHashable?,
+        next: @escaping (Self, Subject) -> Void,
+        error: ((Error) -> Void)? = nil,
+        complete: (() -> Void)? = nil
+    ) -> Self {
+        // Register before subscribing because Drivers may synchronously emit.
+        let slot = FRxBindingSlot()
+        if let key {
+            cancelRxBinding(for: key)
+            rxBindingSlots[key] = slot
+        } else {
+            slot.disposed(by: disposeBag)
         }
+        let localET = ErrorTracker()
+        slot.disposable = Disposables.create(
+            publisher.trackError(localET).drive(onNext: { [weak self] value in
+                guard let self else { return }
+                next(self, value)
+            }, onCompleted: { complete?() }),
+            localET.drive(onNext: error)
+        )
         return self
     }
+}
+
+/// Rx disposables do not automatically dispose on deinitialization.
+fileprivate final class FRxBindingSlot: Disposable {
+    private let serial = SerialDisposable()
+    var disposable: Disposable {
+        get { serial.disposable }
+        set { serial.disposable = newValue }
+    }
+    func dispose() { serial.dispose() }
+    deinit { serial.dispose() }
 }

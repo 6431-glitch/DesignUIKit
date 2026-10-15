@@ -1,7 +1,7 @@
 # Version 1.1.0 Library Improvements
 
 ## State
-- Phase commits 1–3 validated on refactor/main; later phases remain pending.
+- Phases 1–4 committed on refactor/main; iOS passed, tvOS pending.
 - Release baseline: release/1.1.0 created from local master.
 - Documentation branch: refactor/docs-and-agent-guidance; implementation: refactor/main.
 - [Improvement plan](01_LIBRARY_IMPROVEMENTS.md): scope, phases, and contracts.
@@ -19,14 +19,14 @@ predictable, and safe for existing consumers.
 - [x] Phase 1: explicit updates and reload fixes; 22 UIKit tests passed on iOS.
 - [x] Phase 2: stable modifiers, constraints, and layer configuration; iOS passed.
 - [x] Phase 3: keyed incremental children and reactive adapters; iOS passed.
-- [ ] Phase 4: binding lifetime and consumer documentation; iOS passed.
+- [x] Phase 4: binding lifetime and consumer documentation; iOS passed.
 
 ## Delivery Checklist
 - [x] Create release/1.1.0 from master.
 - [x] Push release/1.1.0 and verify its remote commit matches master (c18a229).
 - [x] Merge documentation into release/1.1.0 and create refactor/main.
 - [x] Draft the versioned improvement and verification documents.
-- [ ] Implement the improvement phases and validate on iOS.
+- [x] Implement the improvement phases and validate on iOS.
 - [ ] Validate on tvOS when its platform is installed.
 - [ ] Integrate validated changes into release/1.1.0.
 - [ ] Complete release acceptance before creating a version tag.

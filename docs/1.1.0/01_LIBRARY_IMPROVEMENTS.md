@@ -30,11 +30,11 @@
 - [x] Add opt-in Combine/Rx adapters while keeping existing bindings compatible.
 
 ## Phase 4 — Binding Lifetime and Consumer Guidance
-- [ ] Define append versus replace semantics for repeated binding calls.
-- [ ] Provide scoped cancellation without clearing unrelated subscriptions.
-- [ ] Keep UI delivery on the main thread and avoid strong view captures.
-- [ ] Document setter timing, update scope, and binding ownership with examples.
-- [ ] Correct README module/dependency/requirements tables against Package.swift.
+- [x] Define append versus replace semantics for repeated binding calls.
+- [x] Provide scoped cancellation without clearing unrelated subscriptions.
+- [x] Keep UI delivery on the main thread and avoid strong view captures.
+- [x] Document setter timing, update scope, and binding ownership with examples.
+- [x] Correct README module/dependency/requirements tables against Package.swift.
 
 ## Delivery Rules
 - [x] Deliver phases in order with matching tests and documentation updates.
