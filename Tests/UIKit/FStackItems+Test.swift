@@ -48,6 +48,48 @@ final class FStackItemsTest: XCTestCase {
         XCTAssertEqual((original as? FLabel)?.text, "A")
     }
 
+    func testManualContentAssignment_discardsKeyedHistory() {
+        let stack = FStack(axis: .vertical, arrangedContents: [])
+        let item = Item(id: 1, title: "A")
+        stack.updateItems([item], id: \.id, makeView: { FLabel($0.title) }, update: { _, _ in })
+        let original = stack.arrangedSubviews[0]
+        stack.arrangedContents = [FLabel("Manual")]
+        stack.reload()
+        var creations = 0
+
+        stack.updateItems([item], id: \.id, makeView: { item -> FLabel in
+            creations += 1
+            return FLabel(item.title)
+        }, update: { _, _ in XCTFail("Manual reset must discard the old snapshot") })
+
+        XCTAssertEqual(creations, 1)
+        XCTAssertFalse(stack.arrangedSubviews[0] === original)
+    }
+
+    func testReusedViewForDifferentIDs_rejectsBeforeUpdatingRetainedView() {
+        let stack = FStack(axis: .vertical, arrangedContents: [])
+        stack.updateItems([Item(id: 1, title: "A")], id: \.id, makeView: { FLabel($0.title) }, update: { _, _ in })
+        let original = stack.arrangedSubviews[0] as! FLabel
+        let accepted = stack.updateItems([Item(id: 1, title: "Changed"), .init(id: 2, title: "B")], id: \.id,
+            makeView: { _ in original }, update: { _, _ in XCTFail("Invalid view reuse must not apply changes") })
+        XCTAssertFalse(accepted)
+        XCTAssertEqual(original.text, "A")
+        XCTAssertEqual(stack.arrangedSubviews.count, 1)
+    }
+
+    func testChangedModelType_reusesCompatibleViewAndUpdatesItsContent() {
+        struct AlternateItem: Equatable { let id: Int; let value: String }
+        let stack = FStack(axis: .vertical, arrangedContents: [])
+        stack.updateItems([Item(id: 1, title: "A")], id: \.id, makeView: { FLabel($0.title) }, update: { _, _ in })
+        let original = stack.arrangedSubviews[0]
+
+        stack.updateItems([AlternateItem(id: 1, value: "B")], id: \.id,
+            makeView: { FLabel($0.value) }, update: { (view: FLabel, item: AlternateItem) in view.text = item.value })
+
+        XCTAssertTrue(stack.arrangedSubviews[0] === original)
+        XCTAssertEqual((original as? FLabel)?.text, "B")
+    }
+
     func testReorder_preservesFirstResponderAndTextSelection() {
         let window = UIWindow(frame: .init(x: 0, y: 0, width: 320, height: 480))
         let controller = UIViewController()

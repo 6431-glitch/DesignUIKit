@@ -1,7 +1,7 @@
 # Project Status
 
 ## Current Work
-- Second improvement pass: phases A–B implemented and iOS-validated.
+- Second improvement pass: phases A–C implemented and iOS-validated.
 - Date: 2026-10-15; branch: refactor/main.
 - Implementation is split into independently validated phase commits (1–4).
 - Documentation commit 00912ec is merged locally into release/1.1.0.
@@ -25,7 +25,7 @@
   phase commits contain smaller subsets of that implementation.
 
 ## Second Pass Progress
-- Phase B: all 42 UIKit tests passed, including parent, priority, and axis compatibility checks.
+- Phase C: all 99 package tests passed; large reorders preserved every view at 100, 500, and 1,000 rows.
 - Details: [quality results](1.1.0/07_CODE_QUALITY_RESULTS.md).
 
 ## Remaining Work

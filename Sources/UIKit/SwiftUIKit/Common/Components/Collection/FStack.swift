@@ -19,14 +19,22 @@ public class FStack: BaseStackView, FComponent {
     
     /// The list of components to be arranged in the stack view.
     public var arrangedContents: FBody {
-        didSet {
-            keyedViews.removeAll()
-            keyedItems.removeAll()
+        get { storedContents }
+        set {
+            storedContents = newValue
+            keyedContentState = FKeyedContentState()
         }
     }
-    var keyedViews: [AnyHashable: FBodyComponent] = [:]
-    var keyedItems: [AnyHashable: Any] = [:]
-    
+    private var storedContents: FBody
+    var keyedContentState = FKeyedContentState()
+
+    /// Installs keyed content without routing through the manual-content reset path.
+    func installKeyedContent(_ content: FBody, state: FKeyedContentState) {
+        storedContents = content
+        keyedContentState = state
+        updateContent()
+    }
+
     /// Initializes a stack view with a view builder closure to generate arranged content.
     /// - Parameters:
     ///   - axis: The stack layout direction (horizontal or vertical).
@@ -39,7 +47,7 @@ public class FStack: BaseStackView, FComponent {
         distribution: UIStackView.Distribution? = nil,
         @FViewBuilder arrangedContents: () -> FBody
     ) {
-        self.arrangedContents = arrangedContents()
+        self.storedContents = arrangedContents()
         super.init(frame: .zero)
         self.axis = axis
         self.spacing = spacing
@@ -58,7 +66,7 @@ public class FStack: BaseStackView, FComponent {
         distribution: UIStackView.Distribution? = nil,
         arrangedContents: FBody
     ) {
-        self.arrangedContents = arrangedContents
+        self.storedContents = arrangedContents
         super.init(frame: .zero)
         self.axis = axis
         self.spacing = spacing

@@ -26,34 +26,49 @@ public extension FStack {
         makeView: (Item) -> View,
         update: (View, Item) -> Void
     ) -> Bool {
-        let ids = items.map { AnyHashable($0[keyPath: id]) }
+        let ids = items.map { $0[keyPath: id] }
         guard Set(ids).count == ids.count else { return false }
-        var nextViews: [AnyHashable: FBodyComponent] = [:]
-        var nextItems: [AnyHashable: Any] = [:]
-        var ordered: FBody = []
-        var changes: [(View, Item)] = []
-        for (key, item) in zip(ids, items) {
+        let plan = prepareKeyedUpdate(items, ids: ids, areEquivalent: areEquivalent, makeView: makeView)
+        guard plan.hasDistinctViews else { return false }
+
+        plan.updates.forEach { update($0.view, $0.item) }
+        installKeyedContent(plan.content, state: plan.state)
+        return true
+    }
+}
+
+private extension FStack {
+    func prepareKeyedUpdate<Item, ID: Hashable, View: FBodyComponent>(
+        _ items: [Item],
+        ids: [ID],
+        areEquivalent: (Item, Item) -> Bool,
+        makeView: (Item) -> View
+    ) -> FKeyedUpdatePlan<Item, View> {
+        var plan = FKeyedUpdatePlan<Item, View>()
+        for (id, item) in zip(ids, items) {
             let view: View
-            if let existing = keyedViews[key] as? View {
-                view = existing
-                if let previous = keyedItems[key] as? Item, areEquivalent(previous, item) {
-                    // Preserve local view state for unchanged snapshots.
-                } else {
-                    changes.append((view, item))
-                }
+            if let retained = keyedContentState.existingView(for: id, item: item, as: View.self, areEquivalent: areEquivalent) {
+                view = retained.view
+                if !retained.isUnchanged { plan.updates.append((view, item)) }
             } else {
                 view = makeView(item)
             }
-            nextViews[key] = view
-            nextItems[key] = item
-            ordered.append(view)
+            plan.state.store(item, id: id, view: view)
+            plan.content.append(view)
         }
-        guard Set(ordered.map { ObjectIdentifier($0) }).count == ordered.count else { return false }
-        changes.forEach { update($0.0, $0.1) }
-        arrangedContents = ordered
-        keyedViews = nextViews
-        keyedItems = nextItems
-        updateContent()
-        return true
+        return plan
+    }
+}
+
+/// Prepared before any retained view is mutated or installed, so invalid input
+/// cannot partially update the installed hierarchy.
+@MainActor
+private struct FKeyedUpdatePlan<Item, View: FBodyComponent> {
+    var content: FBody = []
+    var state = FKeyedContentState()
+    var updates: [(view: View, item: Item)] = []
+
+    var hasDistinctViews: Bool {
+        Set(content.map { ObjectIdentifier($0) }).count == content.count
     }
 }

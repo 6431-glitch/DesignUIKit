@@ -18,9 +18,21 @@
 - Typed keys preserve existing debug identifiers and constant-only constraint reuse.
 - Parent, priority, and existing center-axis behavior remain covered.
 
+## Phase C
+- [x] Pass all 99 package tests; add manual-reset, invalid-reuse, and model-type checks.
+- Model snapshots and views now share one entry; casts stay inside keyed state.
+- Four reversals, Debug Simulator sample; no replacement views or update callbacks:
+| Rows | Before state refactor | After state refactor |
+| --- | --- | --- |
+| 100 | 6.55 ms | 6.68 ms |
+| 500 | 113.63 ms | 117.44 ms |
+| 1,000 | 455.26 ms | 464.52 ms |
+- Single samples are diagnostic; no speedup is claimed and no algorithm changed.
+- Large hierarchy reorders remain a separate potential optimization.
+
 ## Remaining Validation
 - [x] Phase B: typed layout keys and constraint topology preservation.
-- [ ] Phase C: coherent keyed state and larger reorder measurements.
+- [x] Phase C: coherent keyed state and larger reorder measurements.
 - [ ] Phase D: naming audit, final full suite, and documentation review.
 - [ ] tvOS: install its platform before compilation/runtime verification.
 

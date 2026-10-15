@@ -85,6 +85,33 @@ final class FStackPerformanceTest: XCTestCase {
         print("FastView benchmark: 100 property updates; created=0 ms=\(propertyChange)")
     }
 
+    func testLargeKeyedReorders_preserveInstancesWithoutNewViews() {
+        for count in [100, 500, 1000] {
+            let items = (0..<count).map { Item(id: $0, title: "Row \($0)") }
+            let stack = FStack(axis: .vertical, arrangedContents: [])
+            var created = 0
+            var updated = 0
+            func render(_ rows: [Item]) {
+                XCTAssertTrue(stack.updateItems(rows, id: \.id, makeView: { item -> FLabel in
+                    created += 1
+                    return FLabel(item.title)
+                }, update: { _, _ in updated += 1 }))
+            }
+            render(items)
+            let originalIdentities = Set(stack.arrangedSubviews.map { ObjectIdentifier($0) })
+            created = 0
+            let duration = elapsed {
+                for iteration in 0..<4 {
+                    render(iteration.isMultiple(of: 2) ? items.reversed() : items)
+                }
+            }
+            XCTAssertEqual(created, 0)
+            XCTAssertEqual(updated, 0)
+            XCTAssertEqual(Set(stack.arrangedSubviews.map { ObjectIdentifier($0) }), originalIdentities)
+            print("FastView large reorder: rows=\(count) reversals=4 created=\(created) updated=\(updated) ms=\(duration)")
+        }
+    }
+
     private func elapsed(_ work: () -> Void) -> Double {
         let start = Date.timeIntervalSinceReferenceDate
         work()

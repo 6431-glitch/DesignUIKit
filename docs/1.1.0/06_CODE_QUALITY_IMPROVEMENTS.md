@@ -5,7 +5,7 @@
 - First-pass validation: 89 iOS tests passed; tvOS remains unverified.
 - Goal: make update behavior easier to trace while preserving public signatures,
   unchanged view identity, constraint reuse, and subscription ownership.
-- Phases A–B are implemented and iOS-validated on refactor/main.
+- Phases A–C are implemented and iOS-validated on refactor/main.
 
 ## Phase A — Named Modifier Snapshots
 - [x] Replace the nested (() -> () -> Void)? restoration factory with a named type.
@@ -23,12 +23,12 @@
 - [x] Clarify existing FAxis-to-center-anchor mapping without breaking callers.
 
 ## Phase C — Explicit Keyed Collection State
-- [ ] Replace parallel view/model dictionaries with one coherent entry/state type.
-- [ ] Isolate Any/AnyHashable casts at a documented internal boundary.
-- [ ] Remove reliance on assignment clearing state followed by manual restoration.
-- [ ] Separate ID validation, create/update decisions, and hierarchy reconciliation.
-- [ ] Preserve duplicate rejection, equal-value skipping, focus, and selection.
-- [ ] Profile larger keyed reorders before changing the reconciliation algorithm.
+- [x] Replace parallel view/model dictionaries with one coherent entry/state type.
+- [x] Isolate Any/AnyHashable casts at a documented internal boundary.
+- [x] Remove reliance on assignment clearing state followed by manual restoration.
+- [x] Separate ID validation, create/update decisions, and hierarchy reconciliation.
+- [x] Preserve duplicate rejection, equal-value skipping, focus, and selection.
+- [x] Profile larger keyed reorders before changing the reconciliation algorithm.
 
 ## Phase D — Naming and Handoff
 - [ ] Use consistent names for stored state, pending work, and cancellation slots.
@@ -39,7 +39,7 @@
 ## Acceptance Checklist
 - [x] Draft and index the second improvement plan.
 - [x] Remove nested restoration factories and magic string layout keys.
-- [ ] Make keyed state ownership understandable from one type or entry point.
+- [x] Make keyed state ownership understandable from one type or entry point.
 - [ ] Pass existing regressions and add tests only for uncovered behavior.
 - [ ] Record workload counts/timings and verify no new replacement-view allocations.
 - [ ] Validate iOS and tvOS; retain explicit limits where platform support is absent.
