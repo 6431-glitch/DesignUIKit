@@ -11,6 +11,12 @@
 - [x] Phase 3: Keyed stacks and opt-in reactive adapters.
 - [x] Phase 4: Named binding ownership/cancellation and consumer guidance.
 
+## Commit History
+- Docs: 00912ec, merged locally into release/1.1.0.
+- Phase 1: 90b58eb; Phase 2: 5a2b8c7.
+- Phase 3: 9f7b9ad; Phase 4: 93e319f.
+- [x] Draft the [second improvement plan](1.1.0/06_CODE_QUALITY_IMPROVEMENTS.md).
+
 ## Validation
 - Phase 4: all 89 package tests passed on iPhone 17 Pro, iOS 26.5.
 - Full pre-split evidence: [results](1.1.0/05_RESULTS.md).

@@ -9,6 +9,7 @@
 - [Update contracts](03_UPDATE_CONTRACTS.md): setter timing and stable-ID children.
 - [Binding ownership](04_BINDINGS.md): named subscriptions and cancellation.
 - [Validation results](05_RESULTS.md): test destinations, workload counts, and limits.
+- [Second improvement plan](06_CODE_QUALITY_IMPROVEMENTS.md): internal readability follow-up.
 - [Original findings](../refactor/01_FAST_VIEW.md): static inspection evidence.
 
 ## Objective

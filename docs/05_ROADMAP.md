@@ -11,6 +11,10 @@
 - [x] Phase 3: Keyed stacks and opt-in reactive adapters.
 - [x] Phase 4: Named binding ownership/cancellation and consumer guidance.
 
+## Second Improvement Pass
+- [x] Draft and index the [code quality plan](1.1.0/06_CODE_QUALITY_IMPROVEMENTS.md).
+- [ ] Implement phases A–D as separately validated changes.
+
 ## Release Gates
 - [ ] Validate tvOS when its platform is installed.
 - [ ] Review release metadata and final acceptance.

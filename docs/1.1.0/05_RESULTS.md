@@ -21,6 +21,13 @@
 - Obsolete section test constructors were updated to the current layout API;
   superseded ratio-helper tests now cover current layout contracts.
 
+## Phase Commit Validation
+- Phase 1 (90b58eb): 24 UIKit tests passed.
+- Phase 2 (5a2b8c7): 31 UIKit tests passed.
+- Phase 3 (9f7b9ad): all 80 available package tests passed.
+- Phase 4 (93e319f): all 89 package tests passed.
+- Full implementation/test files match the preserved pre-split source snapshot.
+
 ## Diagnostic Workloads
 | Workload | Render-all strategy | Selective strategy |
 | --- | --- | --- |
