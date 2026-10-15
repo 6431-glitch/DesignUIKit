@@ -43,7 +43,7 @@
 - See [workload test](../../Tests/UIKit/FStackPerformance+Test.swift).
 
 ## Remaining Release Gates
-- [ ] tvOS compilation/runtime: Xcode reports tvOS 26.5 is not installed.
-- [ ] Validate release metadata/CocoaPods and integrate the release branch.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
+- [ ] Validate Swift package release metadata and integrate the release branch.
 - [ ] Tag/publish only with release authorization.
 - No implementation changes have been pushed to release/1.1.0.

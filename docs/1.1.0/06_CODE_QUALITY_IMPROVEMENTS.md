@@ -2,7 +2,7 @@
 
 ## State and Goal
 - Draft dated 2026-10-15, after first-pass phases 1–4 were committed on refactor/main.
-- First-pass validation: 89 iOS tests passed; tvOS remains unverified.
+- First-pass validation: 89 iOS tests passed; tvOS was unverified and is now outside supported scope.
 - Goal: make update behavior easier to trace while preserving public signatures,
   unchanged view identity, constraint reuse, and subscription ownership.
 - Phases A–D are implemented and iOS-validated on refactor/main.
@@ -43,7 +43,7 @@
 - [x] Pass existing regressions and add tests only for uncovered behavior.
 - [x] Record workload counts/timings and verify no new replacement-view allocations.
 - [x] Validate iOS and document the unavailable tvOS destination.
-- [ ] Validate tvOS when Xcode can select its platform destination.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [x] Review the final diff for source compatibility and update status/results.
 
 ## References

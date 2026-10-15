@@ -36,7 +36,7 @@
 - [x] Link the full onboarding/cookbook/update/diagnostic path from README.
 - [x] Typecheck all user-guide Swift examples, excluding package-manifest fragments.
 - [x] Pass new diagnostic checks and the existing iOS package suite.
-- [ ] Validate tvOS when its platform destination is available.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [x] Keep each maintained guidance file at 50 lines or fewer and validate links.
 - [x] Commit each phase with updated progress and validation evidence.
 

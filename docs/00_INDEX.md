@@ -10,6 +10,8 @@ Read [AGENTS.md](../AGENTS.md) first, then route to the relevant concern.
 - [Architecture](11_ARCHITECTURE.md): ownership and implementation boundaries.
 - [Dependencies](12_DEPENDENCIES.md): package targets and external libraries.
 - [Module scopes](modules/00_INDEX.md): contracts for all six library targets.
+- [Platform support](15_PLATFORMS.md): iOS policy and Mac Catalyst evaluation.
+- [Catalyst test host](16_CATALYST_TESTS.md): window and responder test setup.
 - [Testing](14_TESTING.md): simulator validation and documentation checks.
 
 ## Execution

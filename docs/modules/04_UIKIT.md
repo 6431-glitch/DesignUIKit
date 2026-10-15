@@ -14,7 +14,7 @@
 - Use FViewController.parent(...) and its internal attach/detach flow.
 - Guard section/item indices during diffable snapshot and selection timing.
 - FButton.tapEvent uses touchUpInside on iOS and primaryActionTriggered on
-  tvOS/macCatalyst.
+  Mac Catalyst (under evaluation).
 - Preserve platform guards and avoid Archived APIs.
 
 ## Composition

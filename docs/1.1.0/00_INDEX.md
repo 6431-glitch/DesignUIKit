@@ -2,7 +2,7 @@
 
 ## State
 - First-pass, code-quality, and usability phases are complete on refactor/main.
-- iOS validation passed; tvOS remains pending.
+- iOS validation passed; tvOS support is discontinued.
 - Release baseline: release/1.1.0 created from local master.
 - Documentation branch: refactor/docs-and-agent-guidance; implementation: refactor/main.
 - [Improvement plan](01_LIBRARY_IMPROVEMENTS.md): scope, phases, and contracts.
@@ -32,12 +32,12 @@ predictable, and safe for existing consumers.
 - [x] Merge documentation into release/1.1.0 and create refactor/main.
 - [x] Draft the versioned improvement and verification documents.
 - [x] Implement the improvement phases and validate on iOS.
-- [ ] Validate on tvOS when its platform is installed.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [ ] Integrate validated changes into release/1.1.0.
 - [ ] Complete release acceptance before creating a version tag.
 
 ## Boundaries
-- Preserve public source compatibility and iOS 13/tvOS 15 support.
+- Preserve public source compatibility on iOS 13+; tvOS is unsupported.
 - Keep Combine and Rx integrations outside the base UIKit module.
 - No global render engine or mandatory full hierarchy reconstruction.
 - This draft does not authorize a release tag, publication, or dependency upgrades.

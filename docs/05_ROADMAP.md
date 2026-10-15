@@ -19,8 +19,13 @@
 - [x] Complete [usability phases U1–U4](1.1.0/08_USABILITY_IMPROVEMENTS.md).
 - [x] Pass 107 package tests and compile 11 independent user-guide examples.
 
+## macOS Feasibility
+- [x] Compile all products for Mac Catalyst.
+- [x] Validate automated tests using a Catalyst app host; see [platforms](15_PLATFORMS.md).
+- [ ] Complete manual Catalyst window and input interaction checks.
+
 ## Release Gates
-- [ ] Validate tvOS when its platform is installed.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [ ] Review release metadata and final acceptance.
 - [ ] Integrate implementation into release/1.1.0.
 

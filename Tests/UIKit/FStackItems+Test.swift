@@ -90,7 +90,13 @@ final class FStackItemsTest: XCTestCase {
         XCTAssertEqual((original as? FLabel)?.text, "B")
     }
 
-    func testReorder_preservesFirstResponderAndTextSelection() {
+    func testReorder_preservesFirstResponderAndTextSelection() throws {
+        #if targetEnvironment(macCatalyst)
+        // A package test process has no application lifecycle for native windows.
+        guard UIApplication.shared.delegate != nil else {
+            throw XCTSkip("Run the CatalystHost scheme for window and first-responder coverage.")
+        }
+        #endif
         let window = UIWindow(frame: .init(x: 0, y: 0, width: 320, height: 480))
         let controller = UIViewController()
         window.rootViewController = controller

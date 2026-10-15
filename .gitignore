@@ -49,8 +49,6 @@ Thumbs.db
 *.wmv
 
 # iOS
-Podfile
-Podfile.lock
 .swiftpm/
 #Package.resolved
 *.xcuserstate

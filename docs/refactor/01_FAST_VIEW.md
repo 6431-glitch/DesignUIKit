@@ -32,7 +32,7 @@
 - [x] Stack updates preserve focused input and state of unchanged children.
 - [x] Rebinding does not cause duplicate deliveries or retained views.
 - [x] Matching tests pass on the iOS simulator.
-- [ ] Run tvOS tests when its platform is installed.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 
 ## Source Evidence
 - [Configuration setters](../../Sources/UIKit/SwiftUIKit/Base/Exts/FConfigurable+.swift).

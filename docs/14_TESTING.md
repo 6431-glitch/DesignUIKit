@@ -4,8 +4,7 @@
 - [ ] Add or update tests in the matching Tests module for changed behavior.
 - [ ] Select an available iOS Simulator ID and run:
   `xcodebuild test -scheme DesignUIKit-Package -destination 'platform=iOS Simulator,id=<SIM_ID>'`.
-- [ ] Select an available tvOS Simulator ID and run:
-  `xcodebuild test -scheme DesignUIKit-Package -destination 'platform=tvOS Simulator,id=<SIM_ID>'`.
+- [ ] For Mac Catalyst evaluation, follow [platform support](15_PLATFORMS.md).
 - [ ] Record test results and any platform coverage still pending.
 
 ## Test Ownership

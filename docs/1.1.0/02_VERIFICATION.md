@@ -20,7 +20,7 @@
 ## Compatibility and Performance
 - [x] Existing repository call sites compile without migration.
 - [x] Child-controller containment and collection bounds regressions still pass.
-- [ ] Validate tvOS compilation/runtime and platform-specific button events.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [x] Measure property update, one-item update, and reorder workloads on a
   recorded simulator/device, OS version, item count, and build configuration.
 - [x] Record created/reused view counts and latency before/after each change.
@@ -29,12 +29,12 @@
 
 ## Release Checklist
 - [x] Run all package tests on iOS using [testing](../14_TESTING.md).
-- [ ] Run tvOS validation when its platform is available.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [x] Record actual test destinations, results, and unresolved verification.
 - [x] Document changed setter/reload behavior and binding ownership.
 - [x] Update all completed phase checkboxes and root roadmap/status.
 - [ ] Review the final release diff and confirm the intended release baseline.
-- [ ] Confirm package and CocoaPods release metadata against the delivery scope.
+- [ ] Confirm Swift package release metadata against the delivery scope.
 - [ ] Obtain release authorization before tagging or publishing artifacts.
 
 ## Evidence Boundary

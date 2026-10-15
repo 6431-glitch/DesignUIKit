@@ -34,7 +34,7 @@
 
 ## Do Not Break
 - Public source compatibility unless a breaking change is explicitly requested.
-- iOS/tvOS support, child-controller containment, and collection bounds safety.
+- iOS support, child-controller containment, and collection bounds safety.
 - Module-specific contracts recorded in [module scopes](docs/modules/00_INDEX.md).
 
 ## Documentation Rules

@@ -19,7 +19,8 @@
 
 ## Compatibility
 - Preserve public source compatibility unless explicitly authorized otherwise.
-- Keep iOS/tvOS guards aligned with Package.swift.
+- Preserve iOS 13+ support; evaluate macOS through Mac Catalyst.
+- tvOS is unsupported; retained availability annotations are historical guards.
 - Exclude Archived APIs from new implementations.
 - Preserve idempotent child-controller containment and bounds-safe adapters.
 

@@ -24,8 +24,21 @@
 - Existing Bool/callback signatures remain; structured diagnostics are additive.
 - Documentation links, index coverage, and 50-line limits passed.
 
+## Platform Scope
+- [x] Discontinue tvOS and update the manifest and maintained requirements.
+- [x] Build all products for Mac Catalyst; iOS regression passed all 107 tests.
+- [x] Catalyst package: 106 passed, one host-dependent test explicitly skipped.
+- [x] Catalyst app host: all 52 UIKit tests passed, including responder/selection.
+- [ ] Complete manual Catalyst interaction checks.
+- See [platform support](15_PLATFORMS.md) for evidence and remaining checks.
+
+## Distribution
+- [x] Keep Swift Package Manager as the sole supported distribution method.
+- [x] Remove legacy packaging files, ignore rules, and documentation references.
+
 ## Remaining Release Gates
-- [ ] Validate tvOS: Xcode lists its SDK but cannot select a usable destination.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [ ] Complete [release acceptance](1.1.0/02_VERIFICATION.md), including metadata.
+- [x] Prepare refactor/main for review into release/1.1.0; CI remains unchanged.
 - [ ] Integrate implementation commits into release/1.1.0.
 - Release contains documentation only; its remote remains at baseline c18a229.

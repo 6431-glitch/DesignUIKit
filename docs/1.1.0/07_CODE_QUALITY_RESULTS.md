@@ -39,8 +39,7 @@
 - [x] Phase B: typed layout keys and constraint topology preservation.
 - [x] Phase C: coherent keyed state and larger reorder measurements.
 - [x] Phase D: naming audit, final full suite, and documentation review.
-- [ ] tvOS: SDK is listed, but explicit generic builds fail to select a destination;
-  Xcode reports tvOS 26.5 is not installed. Compilation/runtime remain unverified.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 
 ## Scope
 - Public signatures and observable update contracts remain the compatibility boundary.

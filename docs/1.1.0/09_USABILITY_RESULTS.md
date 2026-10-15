@@ -35,4 +35,4 @@
 - [x] U2: practical cookbook and example validation.
 - [x] U3: predictable update/lifecycle guidance.
 - [x] U4: actionable diagnostics and full regression suite.
-- [ ] tvOS validation when Xcode can select its platform destination.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.

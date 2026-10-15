@@ -5,7 +5,7 @@ optional Combine or RxSwift bindings.
 
 ## Requirements
 - Swift package tools: 5.9.
-- iOS 13+ or tvOS 15+; platform-specific APIs keep their availability guards.
+- iOS 13+; Mac Catalyst builds and tests pass; manual validation is pending. Native AppKit and tvOS are unsupported.
 - An Xcode toolchain supporting Swift 5.9 and the selected platform SDK.
 
 ## Modules
@@ -27,8 +27,7 @@ Add only the products your target needs, for example:
 .product(name: "DesignUIKit", package: "DesignUIKit"),
 .product(name: "DesignCombineUIKit", package: "DesignUIKit"),
 ```
-The [CocoaPods specification](DesignUIKit.podspec) has separate distribution metadata;
-its release validation is tracked in the version checklist.
+Swift Package Manager is the supported distribution method.
 
 ## Composition
 ```swift
