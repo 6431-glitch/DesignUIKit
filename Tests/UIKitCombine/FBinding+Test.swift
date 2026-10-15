@@ -76,6 +76,29 @@ final class FCombineBindingTest: XCTestCase {
         XCTAssertEqual(invalid, 1)
     }
 
+    func testTypedStackErrorCallback_reportsRejectionAndRespectsCancellation() {
+        let source = PassthroughSubject<[Int], Never>()
+        let stack = FVStack(arrangedContents: [])
+        var errors: [FStackUpdateError] = []
+        stack.bindItems(to: source.eraseToAnyPublisher(), key: "items", id: \.self,
+            makeView: { FLabel("\($0)") }, update: { (_: FLabel, _: Int) in },
+            onUpdateError: { error in
+                XCTAssertTrue(Thread.isMainThread)
+                errors.append(error)
+            })
+        source.send([1, 2])
+        drainMainQueue()
+        let first = stack.arrangedSubviews[0]
+        source.send([1, 1])
+        drainMainQueue()
+        XCTAssertEqual(errors, [.duplicateIdentifier(firstIndex: 0, duplicateIndex: 1)])
+        XCTAssertTrue(stack.arrangedSubviews[0] === first)
+        stack.cancelCombineBinding(for: "items")
+        source.send([2, 2])
+        drainMainQueue()
+        XCTAssertEqual(errors.count, 1)
+    }
+
     private func drainMainQueue() {
         let drained = expectation(description: "main queue drained")
         DispatchQueue.main.async { drained.fulfill() }

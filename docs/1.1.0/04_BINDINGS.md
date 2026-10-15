@@ -30,6 +30,7 @@ stack.bindItems(to: rowsPublisher, key: "rows", id: \.id,
 ```
 - bindItems is available for Combine publishers and Rx Drivers of Equatable items.
 - Validation failures preserve installed content and call onInvalidItems if provided.
+- The additive onUpdateError overload receives FStackUpdateError with input positions.
 - Delivery updates UI on the main thread; retained equal values skip update.
 
 ## Consumer Responsibilities

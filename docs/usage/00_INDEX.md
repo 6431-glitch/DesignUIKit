@@ -15,6 +15,8 @@
 ## Update Reference
 - [Choose the smallest update](09_UPDATES.md): timing, lifecycle, and ownership.
 
+- [Diagnostics](10_DIAGNOSTICS.md): actionable input errors and opt-in layout inspection.
+
 ## Source Version
 - These guides describe refactor/main, including unreleased 1.1.0 improvements.
 - Use the local checkout for these examples until a release containing them exists.

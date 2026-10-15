@@ -25,20 +25,20 @@
 - [x] Clarify named versus unkeyed binding lifetime and modifier precedence.
 
 ## Phase U4 — Actionable Diagnostics
-- [ ] Add a structured keyed-update Result API alongside the existing Bool API.
-- [ ] Report duplicate-ID and reused-view positions with actionable messages.
-- [ ] Add typed reactive error callbacks while preserving existing callbacks.
-- [ ] Add opt-in configuration diagnostics for fixed sizes with pinned parent edges.
-- [ ] Document diagnostic limits and test rejection without partial updates.
+- [x] Add a structured keyed-update Result API alongside the existing Bool API.
+- [x] Report duplicate-ID and reused-view positions with actionable messages.
+- [x] Add typed reactive error callbacks while preserving existing callbacks.
+- [x] Add opt-in configuration diagnostics for fixed sizes with pinned parent edges.
+- [x] Document diagnostic limits and test rejection without partial updates.
 
 ## Acceptance Checklist
 - [x] Draft and index the third improvement plan before implementation.
-- [ ] Link the full onboarding/cookbook/update/diagnostic path from README.
-- [ ] Typecheck all user-guide Swift examples, excluding package-manifest fragments.
-- [ ] Pass new diagnostic checks and the existing iOS package suite.
+- [x] Link the full onboarding/cookbook/update/diagnostic path from README.
+- [x] Typecheck all user-guide Swift examples, excluding package-manifest fragments.
+- [x] Pass new diagnostic checks and the existing iOS package suite.
 - [ ] Validate tvOS when its platform destination is available.
-- [ ] Keep each maintained guidance file at 50 lines or fewer and validate links.
-- [ ] Commit each phase with updated progress and validation evidence.
+- [x] Keep each maintained guidance file at 50 lines or fewer and validate links.
+- [x] Commit each phase with updated progress and validation evidence.
 
 ## Boundaries
 - UIKit composition and selective updates remain the model.

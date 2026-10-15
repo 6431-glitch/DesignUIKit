@@ -22,8 +22,17 @@
 - Separate property mutation, keyed data updates, manual content, and body reconstruction.
 - Existing component and binding contracts remain unchanged.
 
+## Phase U4
+- [x] Pass all 107 package tests: Core 21, Exts 7, External 1, UIKit 52, Combine 13, Rx 13.
+- [x] Typecheck all 11 guide examples independently using only their own imports.
+- Structured Result/callback errors identify duplicate IDs and reused-view positions.
+- Read-only layout checks describe potential pinned-size conflicts and their limits.
+- Legacy Bool/callback behavior, retained content, UI delivery, and cancellation pass.
+- Six new core tests and two reactive tests cover the additive APIs.
+- Examples are compiler-checked; cookbook screenshots/device acceptance were not run.
+
 ## Remaining Phases
 - [x] U2: practical cookbook and example validation.
 - [x] U3: predictable update/lifecycle guidance.
-- [ ] U4: actionable diagnostics and full regression suite.
+- [x] U4: actionable diagnostics and full regression suite.
 - [ ] tvOS validation when Xcode can select its platform destination.

@@ -15,6 +15,10 @@
 - [x] Draft and index the [code quality plan](1.1.0/06_CODE_QUALITY_IMPROVEMENTS.md).
 - [x] Implement phases A–D as separately validated changes.
 
+## Third Improvement Pass
+- [x] Complete [usability phases U1–U4](1.1.0/08_USABILITY_IMPROVEMENTS.md).
+- [x] Pass 107 package tests and compile 11 independent user-guide examples.
+
 ## Release Gates
 - [ ] Validate tvOS when its platform is installed.
 - [ ] Review release metadata and final acceptance.

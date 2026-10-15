@@ -38,9 +38,23 @@ public extension FStack {
         update: @escaping (View, Item) -> Void,
         onInvalidItems: (() -> Void)? = nil
     ) -> Self {
+        bindItems(to: driver, key: key, id: id, makeView: makeView, update: update,
+                  onUpdateError: { _ in onInvalidItems?() })
+    }
+
+    /// Receives structured validation failures while retaining the installed content.
+    @discardableResult
+    func bindItems<Item: Equatable, ID: Hashable, View: FBodyComponent>(
+        to driver: Driver<[Item]>,
+        key: AnyHashable? = nil,
+        id: KeyPath<Item, ID>,
+        makeView: @escaping (Item) -> View,
+        update: @escaping (View, Item) -> Void,
+        onUpdateError: @escaping (FStackUpdateError) -> Void
+    ) -> Self {
         bind(to: driver, key: key) { stack, items in
-            if !stack.updateItems(items, id: id, makeView: makeView, update: update) {
-                onInvalidItems?()
+            if case let .failure(error) = stack.updateItemsResult(items, id: id, makeView: makeView, update: update) {
+                onUpdateError(error)
             }
         }
     }

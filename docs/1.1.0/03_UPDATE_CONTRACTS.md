@@ -31,6 +31,7 @@ stack.updateItems(rows, id: \.id,
 - makeView must fully configure a distinct view; use immutable model snapshots.
 - Non-Equatable models can supply areEquivalent: explicitly.
 - Duplicate IDs or reused view instances return false before installing content.
+- updateItemsResult adds structured rejection details; [diagnostics](../usage/10_DIAGNOSTICS.md).
 - Manual arrangedContents assignment clears keyed history; the next keyed call
   creates new views. Existing unkeyed APIs remain available.
 

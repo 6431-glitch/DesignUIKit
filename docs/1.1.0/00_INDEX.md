@@ -1,7 +1,8 @@
 # Version 1.1.0 Library Improvements
 
 ## State
-- Phases 1–4 committed on refactor/main; iOS passed, tvOS pending.
+- First-pass, code-quality, and usability phases are complete on refactor/main.
+- iOS validation passed; tvOS remains pending.
 - Release baseline: release/1.1.0 created from local master.
 - Documentation branch: refactor/docs-and-agent-guidance; implementation: refactor/main.
 - [Improvement plan](01_LIBRARY_IMPROVEMENTS.md): scope, phases, and contracts.

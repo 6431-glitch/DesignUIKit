@@ -26,14 +26,42 @@ public extension FStack {
         makeView: (Item) -> View,
         update: (View, Item) -> Void
     ) -> Bool {
+        if case .success = updateItemsResult(items, id: id, areEquivalent: areEquivalent, makeView: makeView, update: update) {
+            return true
+        }
+        return false
+    }
+
+    /// Reports actionable rejection details without changing the existing Bool API.
+    /// Duplicate IDs are rejected before makeView runs. Invalid view reuse is
+    /// rejected before retained views are updated or content is installed.
+    func updateItemsResult<Item: Equatable, ID: Hashable, View: FBodyComponent>(
+        _ items: [Item],
+        id: KeyPath<Item, ID>,
+        makeView: (Item) -> View,
+        update: (View, Item) -> Void
+    ) -> Result<Void, FStackUpdateError> {
+        updateItemsResult(items, id: id, areEquivalent: ==, makeView: makeView, update: update)
+    }
+
+    /// Custom equality variant for immutable snapshots that are not Equatable.
+    func updateItemsResult<Item, ID: Hashable, View: FBodyComponent>(
+        _ items: [Item],
+        id: KeyPath<Item, ID>,
+        areEquivalent: (Item, Item) -> Bool,
+        makeView: (Item) -> View,
+        update: (View, Item) -> Void
+    ) -> Result<Void, FStackUpdateError> {
         let ids = items.map { $0[keyPath: id] }
-        guard Set(ids).count == ids.count else { return false }
+        if let duplicate = firstDuplicate(in: ids) {
+            return .failure(.duplicateIdentifier(firstIndex: duplicate.first, duplicateIndex: duplicate.repeated))
+        }
         let plan = prepareKeyedUpdate(items, ids: ids, areEquivalent: areEquivalent, makeView: makeView)
-        guard plan.hasDistinctViews else { return false }
+        if let error = plan.validationError { return .failure(error) }
 
         plan.updates.forEach { update($0.view, $0.item) }
         installKeyedContent(plan.content, state: plan.state)
-        return true
+        return .success(())
     }
 }
 
@@ -68,7 +96,17 @@ private struct FKeyedUpdatePlan<Item, View: FBodyComponent> {
     var state = FKeyedContentState()
     var updates: [(view: View, item: Item)] = []
 
-    var hasDistinctViews: Bool {
-        Set(content.map { ObjectIdentifier($0) }).count == content.count
+    var validationError: FStackUpdateError? {
+        guard let duplicate = firstDuplicate(in: content.map { ObjectIdentifier($0) }) else { return nil }
+        return .reusedView(firstIndex: duplicate.first, duplicateIndex: duplicate.repeated)
     }
+}
+
+private func firstDuplicate<Value: Hashable>(in values: [Value]) -> (first: Int, repeated: Int)? {
+    var positions: [Value: Int] = [:]
+    for (index, value) in values.enumerated() {
+        if let first = positions[value] { return (first, index) }
+        positions[value] = index
+    }
+    return nil
 }

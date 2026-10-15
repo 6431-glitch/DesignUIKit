@@ -1,28 +1,28 @@
 # Project Status
 
 ## Current Work
-- Third improvement pass: U1–U3 complete; onboarding, cookbook, and update decisions are documented.
 - Date: 2026-10-15; branch: refactor/main.
-- First-pass phases 1–4 and second-pass phases A–D are implemented and iOS-validated.
+- All three improvement passes are implemented and iOS-validated.
 - Documentation commit 00912ec is merged locally into release/1.1.0.
 
-## First-Pass Delivery
-- [x] Phase 1: 90b58eb; Phase 2: 5a2b8c7.
-- [x] Phase 3: 9f7b9ad; Phase 4: 93e319f.
-- Evidence: [first-pass results](1.1.0/05_RESULTS.md).
+## First and Second Passes
+- [x] Initial phases 1–4: selective updates, stable configuration, keyed stacks, bindings.
+- [x] Quality phases A–D: named snapshots, focused layout, coherent state, naming.
+- Evidence: [first-pass](1.1.0/05_RESULTS.md) and [quality results](1.1.0/07_CODE_QUALITY_RESULTS.md).
 
-## Second-Pass Delivery
-- [x] Phase A: named modifier snapshots and restoration lifecycle (ac308eb).
-- [x] Phase B: typed layout keys and focused operations (6d1ecd5).
-- [x] Phase C: coherent keyed state and update planning (d38d871).
-- [x] Phase D: consistent internal naming, compatibility review, and final validation.
-- Plan: [code quality improvements](1.1.0/06_CODE_QUALITY_IMPROVEMENTS.md).
+## Third-Pass Delivery
+- [x] U1: onboarding and first-screen/binding/keyed-content guides (cb3b72e).
+- [x] U2: five practical cookbook recipes (fcfc19d).
+- [x] U3: update decisions, timing, lifecycle, and ownership (c2926b6).
+- [x] U4: structured update errors, typed callbacks, and opt-in layout diagnostics.
+- [Plan](1.1.0/08_USABILITY_IMPROVEMENTS.md), [results](1.1.0/09_USABILITY_RESULTS.md), and [user guides](usage/00_INDEX.md).
 
 ## Validation
-- All 99 package tests passed on iPhone 17 Pro, iOS 26.5.
-- View/focus/constraint/subscription preservation and larger reorders remain covered.
-- Public signatures and consumer update contracts remain unchanged.
-- Measurement details and limitations: [second-pass results](1.1.0/07_CODE_QUALITY_RESULTS.md).
+- All 107 package tests passed on iPhone 17 Pro, iOS 26.5.
+- All 11 user-guide Swift examples independently typechecked for iOS 13+.
+- Two package-manifest fragments excluded from standalone example compilation.
+- Existing Bool/callback signatures remain; structured diagnostics are additive.
+- Documentation links, index coverage, and 50-line limits passed.
 
 ## Remaining Release Gates
 - [ ] Validate tvOS: Xcode lists its SDK but cannot select a usable destination.

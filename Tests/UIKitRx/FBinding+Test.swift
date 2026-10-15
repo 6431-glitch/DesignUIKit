@@ -68,6 +68,26 @@ final class FRxBindingTest: XCTestCase {
         XCTAssertEqual(invalid, 1)
     }
 
+    func testTypedStackErrorCallback_reportsRejectionAndRespectsCancellation() {
+        let source = PublishRelay<[Int]>()
+        let stack = FVStack(arrangedContents: [])
+        var errors: [FStackUpdateError] = []
+        stack.bindItems(to: source.asDriver(onErrorDriveWith: .empty()), key: "items", id: \.self,
+            makeView: { FLabel("\($0)") }, update: { (_: FLabel, _: Int) in },
+            onUpdateError: { error in
+                XCTAssertTrue(Thread.isMainThread)
+                errors.append(error)
+            })
+        source.accept([1, 2])
+        let first = stack.arrangedSubviews[0]
+        source.accept([1, 1])
+        XCTAssertEqual(errors, [.duplicateIdentifier(firstIndex: 0, duplicateIndex: 1)])
+        XCTAssertTrue(stack.arrangedSubviews[0] === first)
+        stack.cancelRxBinding(for: "items")
+        source.accept([2, 2])
+        XCTAssertEqual(errors.count, 1)
+    }
+
     func testBackgroundEmission_updatesUIOnMainThread() {
         let source = PublishSubject<String>()
         let label = FLabel()
