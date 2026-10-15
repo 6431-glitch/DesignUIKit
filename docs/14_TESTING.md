@@ -7,6 +7,8 @@
 - [ ] For Mac Catalyst evaluation, follow [platform support](15_PLATFORMS.md).
 - [ ] Record test results and any platform coverage still pending.
 
+- Automated equivalents and local commands: [CI](17_CI.md).
+
 ## Test Ownership
 | Sources | Tests |
 | --- | --- |

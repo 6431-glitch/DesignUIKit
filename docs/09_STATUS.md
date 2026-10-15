@@ -39,6 +39,8 @@
 ## Remaining Release Gates
 - [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [ ] Complete [release acceptance](1.1.0/02_VERIFICATION.md), including metadata.
-- [x] Prepare refactor/main for review into release/1.1.0; CI remains unchanged.
+- [x] Prepare refactor/main for review into release/1.1.0 ([PR #5](https://github.com/duke6431/DesignUIKit/pull/5)).
+- [x] Implement and locally validate [CI workflows](17_CI.md): iOS, Catalyst, docs.
+- [ ] Confirm existing runner scheduling and a successful GitHub Actions run.
 - [ ] Integrate implementation commits into release/1.1.0.
 - Release contains documentation only; its remote remains at baseline c18a229.

@@ -1,0 +1,95 @@
+name: Verification checks
+
+on:
+  workflow_call:
+    inputs:
+      commit:
+        description: 'Optional full trusted commit SHA; defaults to event commit'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Documentation
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_LABELS || '["self-hosted","macOS","ARM64"]') }}
+    timeout-minutes: 10
+    steps:
+      - name: Validate requested commit
+        env:
+          REQUESTED_COMMIT: ${{ inputs.commit }}
+        run: |
+          if [[ -n "$REQUESTED_COMMIT" && ! "$REQUESTED_COMMIT" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo 'Release verification requires a full commit SHA.' >&2
+            exit 1
+          fi
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.commit || github.sha }}
+          persist-credentials: false
+      - name: Check documentation
+        run: |
+          python3 -m unittest discover -s scripts/ci -p 'test_*.py'
+          python3 scripts/ci/check_docs.py
+          git diff --check
+      - name: Record verified commit
+        run: git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
+
+  ios:
+    name: iOS tests and examples
+    needs: docs
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_LABELS || '["self-hosted","macOS","ARM64"]') }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.commit || github.sha }}
+          persist-credentials: false
+      - name: Set isolated work directory
+        run: echo "CI_WORK_ROOT=$RUNNER_TEMP/designuikit-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+      - name: Run iOS tests and typecheck guide examples
+        run: python3 scripts/ci/run_tests.py ios --work-dir "$CI_WORK_ROOT/ios"
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ios-failures-${{ github.run_attempt }}
+          path: |
+            ${{ env.CI_WORK_ROOT }}/ios/*.log
+            ${{ env.CI_WORK_ROOT }}/ios/*.xcresult
+            ${{ env.CI_WORK_ROOT }}/ios/examples/*.swift
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Remove job build files
+        if: always()
+        run: python3 scripts/ci/cleanup.py "$CI_WORK_ROOT/ios"
+
+  catalyst:
+    name: Mac Catalyst tests
+    needs: ios
+    runs-on: ${{ fromJSON(vars.CI_RUNNER_LABELS || '["self-hosted","macOS","ARM64"]') }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.commit || github.sha }}
+          persist-credentials: false
+      - name: Set isolated work directory
+        run: echo "CI_WORK_ROOT=$RUNNER_TEMP/designuikit-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+      - name: Run package and hosted UIKit tests
+        run: python3 scripts/ci/run_tests.py catalyst --work-dir "$CI_WORK_ROOT/catalyst"
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: catalyst-failures-${{ github.run_attempt }}
+          path: |
+            ${{ env.CI_WORK_ROOT }}/catalyst/*.log
+            ${{ env.CI_WORK_ROOT }}/catalyst/*.xcresult
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Remove job build files
+        if: always()
+        run: python3 scripts/ci/cleanup.py "$CI_WORK_ROOT/catalyst"

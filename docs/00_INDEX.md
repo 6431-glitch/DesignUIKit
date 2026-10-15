@@ -12,6 +12,7 @@ Read [AGENTS.md](../AGENTS.md) first, then route to the relevant concern.
 - [Module scopes](modules/00_INDEX.md): contracts for all six library targets.
 - [Platform support](15_PLATFORMS.md): iOS policy and Mac Catalyst evaluation.
 - [Catalyst test host](16_CATALYST_TESTS.md): window and responder test setup.
+- [Continuous integration](17_CI.md): mini runner checks and release verification.
 - [Testing](14_TESTING.md): simulator validation and documentation checks.
 
 ## Execution

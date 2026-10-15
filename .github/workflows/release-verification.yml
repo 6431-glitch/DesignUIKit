@@ -1,0 +1,22 @@
+name: Release verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Trusted release commit SHA (full 40 characters, including CI scripts)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-verification-${{ inputs.commit }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    uses: ./.github/workflows/verify.yml
+    with:
+      commit: ${{ inputs.commit }}
