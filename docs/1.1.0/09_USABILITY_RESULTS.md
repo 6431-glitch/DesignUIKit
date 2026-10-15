@@ -12,8 +12,13 @@
 - [x] Typecheck all four onboarding Swift examples; exclude two manifest fragments.
 - Guides identify unreleased branch APIs and explain explicit closure types.
 
+## Phase U2
+- [x] Add five focused cookbook recipes and typecheck all nine guide examples.
+- Loading visibility uses intrinsic sizing, avoiding a required fixed-height hiding conflict.
+- Reusable-list snapshots reload changed retained rows; custom layout disables parent pins.
+
 ## Remaining Phases
-- [ ] U2: practical cookbook and example validation.
+- [x] U2: practical cookbook and example validation.
 - [ ] U3: predictable update/lifecycle guidance.
 - [ ] U4: actionable diagnostics and full regression suite.
 - [ ] tvOS validation when Xcode can select its platform destination.

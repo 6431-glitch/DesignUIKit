@@ -1,7 +1,7 @@
 # Project Status
 
 ## Current Work
-- Third improvement pass: U1 onboarding complete; four examples typechecked.
+- Third improvement pass: U1–U2 complete; all nine onboarding/cookbook examples typechecked.
 - Date: 2026-10-15; branch: refactor/main.
 - First-pass phases 1–4 and second-pass phases A–D are implemented and iOS-validated.
 - Documentation commit 00912ec is merged locally into release/1.1.0.

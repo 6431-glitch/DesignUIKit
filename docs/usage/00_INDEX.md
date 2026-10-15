@@ -5,6 +5,13 @@
 - [Bindings](02_BINDINGS.md): update one component with Combine or RxSwift.
 - [Dynamic stacks](03_DYNAMIC_STACKS.md): retain views by stable ID.
 
+## Cookbook
+- [Forms](04_FORMS.md): validate input without reconstructing controls.
+- [Loading states](05_LOADING_STATES.md): retain components and toggle visibility.
+- [Reusable lists](06_REUSABLE_LISTS.md): stable IDs and changed-row snapshots.
+- [Child controllers](07_CHILD_CONTROLLERS.md): containment through FViewController.
+- [Custom layout](08_CUSTOM_LAYOUT.md): avoid competing parent pins.
+
 ## Source Version
 - These guides describe refactor/main, including unreleased 1.1.0 improvements.
 - Use the local checkout for these examples until a release containing them exists.

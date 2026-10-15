@@ -13,10 +13,10 @@
 - [x] Add binding and keyed-stack introductions with explicit closure types.
 
 ## Phase U2 — Practical Cookbook
-- [ ] Add focused form, loading-state, dynamic-list, controller, and layout recipes.
-- [ ] Show retained view instances and selective updates in each relevant recipe.
-- [ ] Explain when custom layout requires disabling automatic parent attachment.
-- [ ] Typecheck user-guide Swift examples against the actual built package modules.
+- [x] Add focused form, loading-state, dynamic-list, controller, and layout recipes.
+- [x] Show retained view instances and selective updates in each relevant recipe.
+- [x] Explain when custom layout requires disabling automatic parent attachment.
+- [x] Typecheck user-guide Swift examples against the actual built package modules.
 
 ## Phase U3 — Predictable Update Guidance
 - [ ] Add a decision table for mutate, bind, updateItems, updateContent, and reload.
