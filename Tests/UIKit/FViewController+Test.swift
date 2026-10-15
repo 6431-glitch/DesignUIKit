@@ -35,6 +35,23 @@ final class FViewControllerTest: XCTestCase {
         XCTAssertEqual(child.willMoveToParentCount(parent), 1)
         XCTAssertEqual(child.didMoveToParentCount(parent), 1)
     }
+
+    func testReload_preservesContainmentAndChildView() {
+        let parent = UIViewController()
+        let child = SpyChildViewController()
+        let sut = FViewController(child).parent(parent)
+        parent.view.addSubview(sut)
+        let originalView = child.view
+
+        sut.reload()
+
+        XCTAssertTrue(child.parent === parent)
+        XCTAssertTrue(child.view === originalView)
+        XCTAssertTrue(child.view.superview === sut)
+        XCTAssertEqual(child.willMoveToParentCount(parent), 1)
+        XCTAssertEqual(child.didMoveToParentCount(parent), 1)
+    }
+
 }
 
 private final class SpyChildViewController: UIViewController {

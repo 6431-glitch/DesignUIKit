@@ -153,6 +153,10 @@ public final class FButton: BaseButton, FComponent, FCalligraphiable, FThemableF
     }
     
     /// Applies layer-related configuration updates after layout changes.
+    public func updateContent() {
+        updateLabel()
+    }
+
     public override func layoutSubviews() {
         super.layoutSubviews()
         configuration?.updateLayers(for: self)

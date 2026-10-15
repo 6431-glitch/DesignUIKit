@@ -61,15 +61,32 @@ public class FStack: BaseStackView, FComponent {
     /// Adds the given body components to the stack view, flattening any `FForEach` components.
     /// - Parameter body: The array of views or wrappers to insert into the stack.
     func addContents(_ body: FBody) {
-        body.flatMap {
-            ($0 as? FForEach)?.content() ?? [$0]
-        }.forEach { view in
-            if arrangedSubviews.contains(where: { $0 === view }) {
-                return
+        let desired = body.flatMap { ($0 as? FForEach)?.content() ?? [$0] }
+        let identities = Set(desired.map { ObjectIdentifier($0) })
+        for view in arrangedSubviews where !identities.contains(ObjectIdentifier(view)) {
+            removeArrangedSubview(view)
+            view.removeFromSuperview()
+            view.configuration?.isLayoutManagedByContainer = false
+        }
+        var inserted = Set<ObjectIdentifier>()
+        for (index, view) in desired.enumerated() {
+            guard inserted.insert(ObjectIdentifier(view)).inserted else { continue }
+            if view.configuration?.isLayoutManagedByContainer != true {
+                view.configuration?.isLayoutManagedByContainer = true
             }
             view.translatesAutoresizingMaskIntoConstraints = false
-            addArrangedSubview(view)
+            if index >= arrangedSubviews.count || arrangedSubviews[index] !== view {
+                // Reordering an arranged view keeps it in the view hierarchy.
+                if arrangedSubviews.contains(where: { $0 === view }) {
+                    removeArrangedSubview(view)
+                }
+                insertArrangedSubview(view, at: min(index, arrangedSubviews.count))
+            }
         }
+    }
+
+    public func updateContent() {
+        addContents(arrangedContents)
     }
 
     public override func didMoveToSuperview() {

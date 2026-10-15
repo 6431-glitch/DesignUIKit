@@ -69,7 +69,7 @@ private extension CommonCollectionViewTest {
     }
 
     func makeSection(cells: [CommonCollectionCellModel]) -> CommonCollection.Section {
-        .init(cells: cells).with(layout: { _ in
+        .init(cells: cells, layoutStyle: .customized { _ in
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .absolute(44)

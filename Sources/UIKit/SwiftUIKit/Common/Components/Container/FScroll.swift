@@ -21,6 +21,8 @@ public final class FScroll: BaseScrollView, FComponent {
     /// Optional closure for applying additional configuration to the scroll view.
     public var customConfiguration: ((FScroll) -> Void)?
     private var hasSetupContent: Bool = false
+    private var contentConstraints: [NSLayoutConstraint] = []
+    private var installedContents: [UIView] = []
     
     /// Initializes a scroll view with a single optional body component.
     /// - Parameters:
@@ -80,6 +82,7 @@ public final class FScroll: BaseScrollView, FComponent {
         }
         guard !flattened.isEmpty else { return }
 
+        installedContents = flattened
         var previousView: UIView?
         for view in flattened {
             if view.superview !== self {
@@ -88,7 +91,7 @@ public final class FScroll: BaseScrollView, FComponent {
             view.translatesAutoresizingMaskIntoConstraints = false
             switch axis {
             case .horizontal:
-                NSLayoutConstraint.activate([
+                installConstraints([
                     view.topAnchor.constraint(equalTo: frameLayoutGuide.topAnchor),
                     view.bottomAnchor.constraint(equalTo: frameLayoutGuide.bottomAnchor),
                     view.leadingAnchor.constraint(
@@ -97,7 +100,7 @@ public final class FScroll: BaseScrollView, FComponent {
                     )
                 ])
             case .vertical:
-                NSLayoutConstraint.activate([
+                installConstraints([
                     view.topAnchor.constraint(
                         equalTo: previousView?.bottomAnchor ?? contentLayoutGuide.topAnchor,
                         constant: view.configuration?.containerPadding[.top] ?? 0
@@ -106,7 +109,7 @@ public final class FScroll: BaseScrollView, FComponent {
                     view.trailingAnchor.constraint(equalTo: frameLayoutGuide.trailingAnchor)
                 ])
             @unknown default:
-                NSLayoutConstraint.activate([
+                installConstraints([
                     view.topAnchor.constraint(
                         equalTo: previousView?.bottomAnchor ?? contentLayoutGuide.topAnchor,
                         constant: view.configuration?.containerPadding[.top] ?? 0
@@ -121,23 +124,40 @@ public final class FScroll: BaseScrollView, FComponent {
         guard let lastView = previousView else { return }
         switch axis {
         case .horizontal:
-            NSLayoutConstraint.activate([
+            installConstraints([
                 lastView.trailingAnchor.constraint(equalTo: contentLayoutGuide.trailingAnchor),
                 lastView.heightAnchor.constraint(equalTo: frameLayoutGuide.heightAnchor)
             ])
         case .vertical:
-            NSLayoutConstraint.activate([
+            installConstraints([
                 lastView.bottomAnchor.constraint(equalTo: contentLayoutGuide.bottomAnchor),
                 lastView.widthAnchor.constraint(equalTo: frameLayoutGuide.widthAnchor)
             ])
         @unknown default:
-            NSLayoutConstraint.activate([
+            installConstraints([
                 lastView.bottomAnchor.constraint(equalTo: contentLayoutGuide.bottomAnchor),
                 lastView.widthAnchor.constraint(equalTo: frameLayoutGuide.widthAnchor)
             ])
         }
     }
     
+    private func installConstraints(_ constraints: [NSLayoutConstraint]) {
+        contentConstraints.append(contentsOf: constraints)
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    public func updateContent() {
+        NSLayoutConstraint.deactivate(contentConstraints)
+        contentConstraints.removeAll()
+        let desired = contentViews.flatMap { ($0 as? FForEach)?.content() ?? [$0] }
+        let identities = Set(desired.map { ObjectIdentifier($0) })
+        installedContents.filter { !identities.contains(ObjectIdentifier($0)) }
+            .forEach { $0.removeFromSuperview() }
+        installedContents = []
+        hasSetupContent = false
+        setupContentIfNeeded()
+    }
+
     public override func layoutSubviews() {
         super.layoutSubviews()
         configuration?.updateLayers(for: self)

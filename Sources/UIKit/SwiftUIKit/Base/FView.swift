@@ -63,6 +63,13 @@ open class FView: BaseView, FComponent {
         addSubview(body)
     }
     
+    /// Explicit content reload rebuilds this component's body only.
+    open func updateContent() {
+        subviews.forEach { $0.removeFromSuperview() }
+        hasConfiguredViews = true
+        configureViews()
+    }
+
     /// The main content view of the component.
     ///
     /// Subclasses **must** override this computed property to provide their custom view hierarchy.
