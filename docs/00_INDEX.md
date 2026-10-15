@@ -2,6 +2,9 @@
 
 Read [AGENTS.md](../AGENTS.md) first, then route to the relevant concern.
 
+## User Guides
+- [Using DesignUIKit](usage/00_INDEX.md): onboarding, bindings, and keyed content.
+
 ## Package
 - [Package overview](01_PRODUCT.md): purpose, consumers, and supported scope.
 - [Architecture](11_ARCHITECTURE.md): ownership and implementation boundaries.

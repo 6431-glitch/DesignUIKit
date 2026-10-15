@@ -7,10 +7,10 @@
 - These branch APIs are unreleased; examples must identify their source version.
 
 ## Phase U1 — Onboarding
-- [ ] Add a user-facing documentation index and installation/module guidance.
-- [ ] Provide a complete first-screen example with its imports and hosting context.
-- [ ] Explain the base module and optional Combine/Rx products.
-- [ ] Add binding and keyed-stack introductions with explicit closure types.
+- [x] Add a user-facing documentation index and installation/module guidance.
+- [x] Provide a complete first-screen example with its imports and hosting context.
+- [x] Explain the base module and optional Combine/Rx products.
+- [x] Add binding and keyed-stack introductions with explicit closure types.
 
 ## Phase U2 — Practical Cookbook
 - [ ] Add focused form, loading-state, dynamic-list, controller, and layout recipes.

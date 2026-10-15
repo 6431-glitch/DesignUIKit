@@ -12,6 +12,7 @@
 - [Second improvement plan](06_CODE_QUALITY_IMPROVEMENTS.md): internal readability follow-up.
 - [Second-pass results](07_CODE_QUALITY_RESULTS.md): phase validation and remaining checks.
 - [Ease-of-use plan](08_USABILITY_IMPROVEMENTS.md): onboarding, recipes, updates, and diagnostics.
+- [Usability results](09_USABILITY_RESULTS.md): guide compilation and diagnostic validation.
 - [Original findings](../refactor/01_FAST_VIEW.md): static inspection evidence.
 
 ## Objective
