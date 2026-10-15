@@ -185,7 +185,7 @@ import SnapKit
     
     /// Flag indicating whether to clear all modifiers.
     var clearModifiers: Bool = false
-    var modifierRestorations: [() -> Void] = []
+    var modifierSnapshots: [FModifierRestoring] = []
     var effectiveModifiers: [FModifier] {
         let inherited = clearModifiers ? [] : (owner?.superview?.configuration?.effectiveModifiers ?? [])
         return inherited + modifiers

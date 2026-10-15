@@ -2,80 +2,74 @@ import UIKit
 
 extension FConfiguration {
     func restoreModifiers() {
-        let restorations = modifierRestorations
-        modifierRestorations.removeAll()
-        restorations.reversed().forEach { $0() }
+        let snapshots = modifierSnapshots
+        modifierSnapshots.removeAll()
+        snapshots.reversed().forEach { $0.restoreIfUnchanged() }
     }
 
     func applyModifiers(to view: FBodyComponent) {
         restoreModifiers()
         let inherited = clearModifiers ? [] : (view.superview?.configuration?.effectiveModifiers ?? [])
-        for modifier in inherited {
-            let restore = restoration(for: modifier, on: view)
+        // Parent styles are applied first; locally declared modifiers take precedence.
+        for modifier in inherited + modifiers {
+            let snapshot = makeSnapshot(for: modifier, on: view)
             modifier.body(view)
-            if let restore { modifierRestorations.append(restore()) }
-        }
-        for modifier in modifiers {
-            let restore = restoration(for: modifier, on: view)
-            modifier.body(view)
-            if let restore { modifierRestorations.append(restore()) }
+            snapshot?.captureAppliedState()
+            if let snapshot { modifierSnapshots.append(snapshot) }
         }
     }
 
-    // Capture before and after values so a later direct change is not overwritten
-    // while detaching inherited styles. Arbitrary custom side effects are caller-owned.
-    private func restoration(for modifier: FModifier, on view: FBodyComponent) -> (() -> () -> Void)? {
-        if modifier is FFontModifier, let text = view as? Calligraphiable {
-            let original = text.fontWrapper
-            return { [weak text] in
-                let applied = text?.fontWrapper
-                return { [weak text] in
-                    if text?.fontWrapper == applied { text?.fontWrapper = original }
-                }
-            }
+    private func makeSnapshot(for modifier: FModifier, on view: FBodyComponent) -> FModifierRestoring? {
+        switch modifier {
+        case is FFontModifier:
+            guard let text = view as? Calligraphiable else { return nil }
+            return FModifierSnapshot(
+                read: { [weak text] in text?.fontWrapper },
+                restore: { [weak text] font in text?.fontWrapper = font },
+                matchesApplied: ==)
+        case is FSafeAreaModifier:
+            return FModifierSnapshot(
+                read: { [weak self] in self?.shouldIgnoreSafeArea },
+                restore: { [weak self] value in self?.shouldIgnoreSafeArea = value },
+                matchesApplied: ==)
+        case is FBackgroundModifier:
+            return backgroundSnapshot(for: view)
+        case is FForegroundModifier:
+            return foregroundSnapshot(for: view)
+        default:
+            // Arbitrary custom mutations cannot be reversed by the toolkit.
+            return nil
         }
-        if modifier is FSafeAreaModifier {
-            let original = shouldIgnoreSafeArea
-            return { [weak self] in
-                let applied = self?.shouldIgnoreSafeArea
-                return { [weak self] in
-                    if self?.shouldIgnoreSafeArea == applied { self?.shouldIgnoreSafeArea = original }
-                }
-            }
-        }
-        if modifier is FBackgroundModifier {
-            let original = backgroundColor
-            let originalKey = (view as? FThemableBackground)?.backgroundKey
-            return { [weak self, weak view] in
-                let applied = self?.backgroundColor
-                let appliedKey = (view as? FThemableBackground)?.backgroundKey
-                return { [weak self, weak view] in
-                    let themed = view as? FThemableBackground
-                    guard themed?.backgroundKey?.name == appliedKey?.name,
-                          appliedKey != nil || self?.backgroundColor == applied else { return }
-                    themed?.backgroundKey = originalKey
-                    self?.backgroundColor = original
-                    if originalKey != nil { themed?.apply(theme: ThemeSystem.shared) }
-                }
-            }
-        }
-        if modifier is FForegroundModifier, let themed = view as? FThemableForeground {
-            let original = Self.foregroundColor(of: view)
-            let originalKey = themed.foregroundKey
-            return { [weak view, weak themed] in
-                let applied = view.flatMap { Self.foregroundColor(of: $0) }
-                let appliedKey = themed?.foregroundKey
-                return { [weak view, weak themed] in
-                    guard let view, let themed,
-                          themed.foregroundKey?.name == appliedKey?.name,
-                          appliedKey != nil || Self.foregroundColor(of: view) == applied else { return }
-                    themed.foregroundKey = originalKey
-                    if let original { themed.foreground(original) }
-                    if originalKey != nil { themed.apply(theme: ThemeSystem.shared) }
-                }
-            }
-        }
-        return nil
+    }
+
+    private func backgroundSnapshot(for view: FBodyComponent) -> FModifierRestoring? {
+        FModifierSnapshot(
+            read: { [weak self, weak view] in
+                guard let self, let view else { return nil }
+                return FModifierColorState(color: backgroundColor, key: (view as? FThemableBackground)?.backgroundKey)
+            },
+            restore: { [weak self, weak view] state in
+                let themed = view as? FThemableBackground
+                themed?.backgroundKey = state.key
+                self?.backgroundColor = state.color ?? .clear
+                if state.key != nil { themed?.apply(theme: ThemeSystem.shared) }
+            },
+            matchesApplied: FModifierColorState.matchesApplied)
+    }
+
+    private func foregroundSnapshot(for view: FBodyComponent) -> FModifierRestoring? {
+        guard let themed = view as? FThemableForeground else { return nil }
+        return FModifierSnapshot(
+            read: { [weak view, weak themed] in
+                guard let view, let themed else { return nil }
+                return FModifierColorState(color: Self.foregroundColor(of: view), key: themed.foregroundKey)
+            },
+            restore: { [weak themed] state in
+                themed?.foregroundKey = state.key
+                if let color = state.color { themed?.foreground(color) }
+                if state.key != nil { themed?.apply(theme: ThemeSystem.shared) }
+            },
+            matchesApplied: FModifierColorState.matchesApplied)
     }
 
     private static func foregroundColor(of view: UIView) -> UIColor? {

@@ -36,6 +36,48 @@ final class FConfigurationTest: XCTestCase {
         XCTAssertEqual(child.backgroundColor, .blue)
     }
 
+    func testThemeChange_thenRemovalRestoresOriginalColorAndClearsInheritedKey() {
+        let key = ModifierTestKey(name: "inherited")
+        let parent = FZStack().modified(with: FForegroundModifier(key: key))
+        let label = FLabel("Title").foreground(.green)
+        parent.addSubview(label)
+        label.apply(theme: ModifierTestTheme(color: .red))
+        XCTAssertEqual(label.textColor, .red)
+        label.apply(theme: ModifierTestTheme(color: .blue))
+        XCTAssertEqual(label.textColor, .blue)
+
+        label.removeFromSuperview()
+
+        XCTAssertNil(label.foregroundKey)
+        XCTAssertEqual(label.textColor, .green)
+    }
+
+    func testLocalModifiers_overrideInheritedStylesAndRestoreInReverseOrder() {
+        let parent = FZStack().modified(with: FForegroundModifier(color: .red))
+        let label = FLabel("Title").foreground(.green)
+            .modified(with: FForegroundModifier(color: .blue))
+        parent.addSubview(label)
+        XCTAssertEqual(label.textColor, .blue)
+
+        label.clearModifiers()
+
+        XCTAssertEqual(label.textColor, .green)
+        label.reload()
+        XCTAssertEqual(label.textColor, .green)
+    }
+
+    func testModifierSnapshots_doNotRetainRemovedViews() {
+        let parent = FZStack().modified(with: FForegroundModifier(color: .red))
+        weak var released: FLabel?
+        autoreleasepool {
+            let label = FLabel("Title")
+            released = label
+            parent.addSubview(label)
+            label.removeFromSuperview()
+        }
+        XCTAssertNil(released)
+    }
+
     func testLayoutUpdate_preservesConsumerConstraintAndUnchangedOwnedConstraint() {
         let parent = UIView()
         let sut = FLabel("Title").attachToParent(false).frame(width: 80, height: 20)
@@ -106,4 +148,15 @@ final class FConfigurationTest: XCTestCase {
 @MainActor
 private struct ReplacementModifier: FModifier {
     func body(_ content: FBodyComponent) -> FBodyComponent { FLabel("Replacement") }
+}
+
+@MainActor
+private struct ModifierTestKey: ThemeKey {
+    let name: String
+}
+
+@MainActor
+private struct ModifierTestTheme: ThemeProvider {
+    let color: UIColor
+    func color(key: ThemeKey) -> UIColor { color }
 }

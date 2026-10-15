@@ -10,6 +10,7 @@
 - [Binding ownership](04_BINDINGS.md): named subscriptions and cancellation.
 - [Validation results](05_RESULTS.md): test destinations, workload counts, and limits.
 - [Second improvement plan](06_CODE_QUALITY_IMPROVEMENTS.md): internal readability follow-up.
+- [Second-pass results](07_CODE_QUALITY_RESULTS.md): phase validation and remaining checks.
 - [Original findings](../refactor/01_FAST_VIEW.md): static inspection evidence.
 
 ## Objective

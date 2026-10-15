@@ -5,14 +5,14 @@
 - First-pass validation: 89 iOS tests passed; tvOS remains unverified.
 - Goal: make update behavior easier to trace while preserving public signatures,
   unchanged view identity, constraint reuse, and subscription ownership.
-- This is a follow-up plan; none of its implementation steps have started.
+- Phases A–A are implemented and iOS-validated on refactor/main.
 
 ## Phase A — Named Modifier Snapshots
-- [ ] Replace the nested (() -> () -> Void)? restoration factory with a named type.
-- [ ] Make capture-original, capture-applied, and conditional-restore steps explicit.
-- [ ] Share the inherited/local application loop without hiding their precedence.
-- [ ] Document built-in restoration versus custom modifier cleanup ownership.
-- [ ] Cover direct overrides, theme changes, removal, and repeated reparenting.
+- [x] Replace the nested (() -> () -> Void)? restoration factory with a named type.
+- [x] Make capture-original, capture-applied, and conditional-restore steps explicit.
+- [x] Share the inherited/local application loop without hiding their precedence.
+- [x] Document built-in restoration versus custom modifier cleanup ownership.
+- [x] Cover direct overrides, theme changes, removal, and repeated reparenting.
 
 ## Phase B — Focused Layout Operations
 - [ ] Replace string constraint identifiers in internal storage with a key enum.

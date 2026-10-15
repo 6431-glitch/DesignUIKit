@@ -1,6 +1,7 @@
 # Project Status
 
 ## Current Work
+- Second improvement pass: phases A–A implemented and iOS-validated.
 - Date: 2026-10-15; branch: refactor/main.
 - Implementation is split into independently validated phase commits (1–4).
 - Documentation commit 00912ec is merged locally into release/1.1.0.
@@ -22,6 +23,10 @@
 - Full pre-split evidence: [results](1.1.0/05_RESULTS.md).
 - Full pre-split evidence covers the completed working implementation; intermediate
   phase commits contain smaller subsets of that implementation.
+
+## Second Pass Progress
+- Phase A: 39 UIKit tests passed; the final snapshot adjustment passed all 10 configuration tests.
+- Details: [quality results](1.1.0/07_CODE_QUALITY_RESULTS.md).
 
 ## Remaining Work
 - [ ] Validate tvOS compilation/runtime; its platform is not installed.
