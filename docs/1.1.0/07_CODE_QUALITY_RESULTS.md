@@ -13,8 +13,13 @@
 - Preserve the existing theme-key matching and restoration policy.
 - Built-in styles are toolkit-restored; custom modifier cleanup remains caller-owned.
 
+## Phase B
+- [x] Pass 42 UIKit tests, including three new layout compatibility checks.
+- Typed keys preserve existing debug identifiers and constant-only constraint reuse.
+- Parent, priority, and existing center-axis behavior remain covered.
+
 ## Remaining Validation
-- [ ] Phase B: typed layout keys and constraint topology preservation.
+- [x] Phase B: typed layout keys and constraint topology preservation.
 - [ ] Phase C: coherent keyed state and larger reorder measurements.
 - [ ] Phase D: naming audit, final full suite, and documentation review.
 - [ ] tvOS: install its platform before compilation/runtime verification.

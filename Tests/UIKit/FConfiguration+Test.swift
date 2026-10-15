@@ -120,6 +120,45 @@ final class FConfigurationTest: XCTestCase {
         XCTAssertEqual(height?.constant, 40)
     }
 
+    func testReparenting_replacesParentConstraintButRetainsSizeConstraint() {
+        let first = UIView()
+        let second = UIView()
+        let sut = FLabel("Title").centerInParent().frame(width: 80)
+        first.addSubview(sut)
+        let width = sut.configuration?.ownedLayoutConstraints[.width]
+        let oldCenter = sut.configuration?.ownedLayoutConstraints[.centerX]
+
+        second.addSubview(sut)
+
+        XCTAssertTrue(width === sut.configuration?.ownedLayoutConstraints[.width])
+        XCTAssertFalse(oldCenter?.isActive ?? true)
+        let center = sut.configuration?.ownedLayoutConstraints[.centerX]
+        XCTAssertTrue(center?.secondItem === second.safeAreaLayoutGuide)
+    }
+
+    func testCenterAxisMapping_preservesExistingCoordinateConvention() {
+        let parent = UIView()
+        let sut = FLabel("Title").center(axis: .vertical, offset: 3).center(axis: .horizontal, offset: 7)
+        parent.addSubview(sut)
+        XCTAssertEqual(sut.configuration?.ownedLayoutConstraints[.centerX]?.constant, 3)
+        XCTAssertEqual(sut.configuration?.ownedLayoutConstraints[.centerY]?.constant, 7)
+    }
+
+    func testPriorityChange_replacesActiveConstraintWithoutMutatingRequiredPriority() {
+        let parent = UIView()
+        let sut = FLabel("Title").attachToParent(false).frame(height: 20)
+        parent.addSubview(sut)
+        let original = sut.configuration?.ownedLayoutConstraints[.height]
+
+        sut.layoutPriority(.high)
+        sut.configuration?.applyLayout()
+
+        XCTAssertFalse(original?.isActive ?? true)
+        let updated = sut.configuration?.ownedLayoutConstraints[.height]
+        XCTAssertFalse(original === updated)
+        XCTAssertEqual(updated?.priority, .defaultHigh)
+    }
+
     func testShapeChange_resetsCornerMaskAndCanClearShape() {
         let parent = UIView()
         let sut = FZStack().shaped(.roundedRectangle(cornerRadius: 10, corners: .topLeft))

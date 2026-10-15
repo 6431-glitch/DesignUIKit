@@ -294,7 +294,7 @@ import SnapKit
     var layoutNeedsUpdate = true
     var customLayoutNeedsUpdate = true
     var isLayoutManagedByContainer = false { didSet { invalidateLayout() } }
-    var ownedLayoutConstraints: [String: NSLayoutConstraint] = [:]
+    var ownedLayoutConstraints: [FLayoutConstraintKey: NSLayoutConstraint] = [:]
     var customLayoutConstraints: [Constraint] = []
     weak var layoutSuperview: UIView?
     private var layoutUpdateScheduled = false

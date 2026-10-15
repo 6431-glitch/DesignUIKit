@@ -5,7 +5,7 @@
 - First-pass validation: 89 iOS tests passed; tvOS remains unverified.
 - Goal: make update behavior easier to trace while preserving public signatures,
   unchanged view identity, constraint reuse, and subscription ownership.
-- Phases A–A are implemented and iOS-validated on refactor/main.
+- Phases A–B are implemented and iOS-validated on refactor/main.
 
 ## Phase A — Named Modifier Snapshots
 - [x] Replace the nested (() -> () -> Void)? restoration factory with a named type.
@@ -15,12 +15,12 @@
 - [x] Cover direct overrides, theme changes, removal, and repeated reparenting.
 
 ## Phase B — Focused Layout Operations
-- [ ] Replace string constraint identifiers in internal storage with a key enum.
-- [ ] Split applyLayout into parent transition, desired rules, reconciliation,
+- [x] Replace string constraint identifiers in internal storage with a key enum.
+- [x] Split applyLayout into parent transition, desired rules, reconciliation,
   and custom-constraint handling, with one clear responsibility per helper.
-- [ ] Name the constraint-topology comparison instead of inlining it in the loop.
-- [ ] Preserve active constraint identity when only constants change.
-- [ ] Clarify existing FAxis-to-center-anchor mapping without breaking callers.
+- [x] Name the constraint-topology comparison instead of inlining it in the loop.
+- [x] Preserve active constraint identity when only constants change.
+- [x] Clarify existing FAxis-to-center-anchor mapping without breaking callers.
 
 ## Phase C — Explicit Keyed Collection State
 - [ ] Replace parallel view/model dictionaries with one coherent entry/state type.
@@ -38,7 +38,7 @@
 
 ## Acceptance Checklist
 - [x] Draft and index the second improvement plan.
-- [ ] Remove nested restoration factories and magic string layout keys.
+- [x] Remove nested restoration factories and magic string layout keys.
 - [ ] Make keyed state ownership understandable from one type or entry point.
 - [ ] Pass existing regressions and add tests only for uncovered behavior.
 - [ ] Record workload counts/timings and verify no new replacement-view allocations.
