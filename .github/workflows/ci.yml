@@ -1,4 +1,4 @@
-name: CI
+name: iOS and Mac Catalyst CI
 
 on:
   pull_request:

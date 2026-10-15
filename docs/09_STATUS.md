@@ -1,7 +1,7 @@
 # Project Status
 
 ## Current Work
-- Date: 2026-10-15; branch: refactor/main.
+- Date: 2026-10-16; branch: refactor/main.
 - All three improvement passes are implemented and iOS-validated.
 - Documentation commit 00912ec is merged locally into release/1.1.0.
 
@@ -39,8 +39,9 @@
 ## Remaining Release Gates
 - [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
 - [ ] Complete [release acceptance](1.1.0/02_VERIFICATION.md), including metadata.
-- [x] Prepare refactor/main for review into release/1.1.0 ([PR #5](https://github.com/duke6431/DesignUIKit/pull/5)).
+- [x] Prepare refactor/main for review into release/1.1.0 ([PR #5](https://github.com/6431-glitch/DesignUIKit/pull/5)).
 - [x] Implement and locally validate [CI workflows](17_CI.md): iOS, Catalyst, docs.
-- [ ] Confirm existing runner scheduling and a successful GitHub Actions run.
+- [x] Target shared org runner Dukes-Mini by mini label; upgrade checkout to v6.
+- [ ] Confirm a successful GitHub Actions run on Dukes-Mini.
 - [ ] Integrate implementation commits into release/1.1.0.
 - Release contains documentation only; its remote remains at baseline c18a229.
