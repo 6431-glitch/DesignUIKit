@@ -26,7 +26,7 @@
 - Phase 2 (5a2b8c7): 31 UIKit tests passed.
 - Phase 3 (9f7b9ad): all 80 available package tests passed.
 - Phase 4 (93e319f): all 89 package tests passed.
-- Full implementation/test files match the preserved pre-split source snapshot.
+- At first-pass completion, implementation/test files matched the pre-split snapshot.
 
 ## Diagnostic Workloads
 | Workload | Render-all strategy | Selective strategy |

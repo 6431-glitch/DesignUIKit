@@ -2,8 +2,8 @@ import UIKit
 
 extension FConfiguration {
     func restoreModifiers() {
-        let snapshots = modifierSnapshots
-        modifierSnapshots.removeAll()
+        let snapshots = appliedModifierSnapshots
+        appliedModifierSnapshots.removeAll()
         snapshots.reversed().forEach { $0.restoreIfUnchanged() }
     }
 
@@ -15,7 +15,7 @@ extension FConfiguration {
             let snapshot = makeSnapshot(for: modifier, on: view)
             modifier.body(view)
             snapshot?.captureAppliedState()
-            if let snapshot { modifierSnapshots.append(snapshot) }
+            if let snapshot { appliedModifierSnapshots.append(snapshot) }
         }
     }
 

@@ -5,14 +5,14 @@ import UIKit
 @MainActor
 struct FKeyedContentState {
     private struct Entry {
-        let item: Any
+        let itemSnapshot: Any
         let view: FBodyComponent
     }
 
     private var entries: [AnyHashable: Entry] = [:]
 
     mutating func store<Item, ID: Hashable>(_ item: Item, id: ID, view: FBodyComponent) {
-        entries[AnyHashable(id)] = Entry(item: item, view: view)
+        entries[AnyHashable(id)] = Entry(itemSnapshot: item, view: view)
     }
 
     func existingView<Item, ID: Hashable, View: FBodyComponent>(
@@ -22,7 +22,7 @@ struct FKeyedContentState {
         areEquivalent: (Item, Item) -> Bool
     ) -> (view: View, isUnchanged: Bool)? {
         guard let entry = entries[AnyHashable(id)], let view = entry.view as? View else { return nil }
-        let isUnchanged = (entry.item as? Item).map { areEquivalent($0, item) } ?? false
+        let isUnchanged = (entry.itemSnapshot as? Item).map { areEquivalent($0, item) } ?? false
         return (view, isUnchanged)
     }
 }

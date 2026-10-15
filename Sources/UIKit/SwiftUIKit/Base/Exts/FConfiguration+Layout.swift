@@ -13,9 +13,9 @@ extension FConfiguration {
     /// existing constraints; consumer-owned constraints remain untouched.
     public func applyLayout() {
         guard let view = owner else { return }
-        let parentChanged = layoutSuperview !== view.superview
-        guard layoutNeedsUpdate || parentChanged else { return }
-        layoutNeedsUpdate = false
+        let parentChanged = appliedLayoutParent !== view.superview
+        guard needsLayoutUpdate || parentChanged else { return }
+        needsLayoutUpdate = false
         updateLayoutParent(view.superview)
 
         guard let parent = view.superview else {
@@ -28,16 +28,16 @@ extension FConfiguration {
     }
 
     private func updateLayoutParent(_ parent: UIView?) {
-        guard layoutSuperview !== parent else { return }
-        layoutSuperview = parent
-        customLayoutNeedsUpdate = true
+        guard appliedLayoutParent !== parent else { return }
+        appliedLayoutParent = parent
+        needsCustomLayoutUpdate = true
     }
 
     private func removeOwnedConstraints() {
         NSLayoutConstraint.deactivate(Array(ownedLayoutConstraints.values))
         ownedLayoutConstraints.removeAll()
-        customLayoutConstraints.forEach { $0.deactivate() }
-        customLayoutConstraints.removeAll()
+        ownedCustomConstraints.forEach { $0.deactivate() }
+        ownedCustomConstraints.removeAll()
     }
 
     private func desiredConstraints(for view: UIView, in parent: UIView) -> [FLayoutConstraintKey: NSLayoutConstraint] {
@@ -126,13 +126,13 @@ extension FConfiguration {
     }
 
     private func applyCustomLayout(to view: UIView, in parent: UIView) {
-        guard customLayoutNeedsUpdate else { return }
-        customLayoutNeedsUpdate = false
-        customLayoutConstraints.forEach { $0.deactivate() }
-        customLayoutConstraints = view.snp.prepareConstraints { make in
+        guard needsCustomLayoutUpdate else { return }
+        needsCustomLayoutUpdate = false
+        ownedCustomConstraints.forEach { $0.deactivate() }
+        ownedCustomConstraints = view.snp.prepareConstraints { make in
             layoutConfiguration?(make, parent)
         }
-        customLayoutConstraints.forEach { $0.activate() }
+        ownedCustomConstraints.forEach { $0.activate() }
     }
 }
 

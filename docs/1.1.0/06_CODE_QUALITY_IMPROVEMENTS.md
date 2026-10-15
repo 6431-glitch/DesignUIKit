@@ -5,7 +5,7 @@
 - First-pass validation: 89 iOS tests passed; tvOS remains unverified.
 - Goal: make update behavior easier to trace while preserving public signatures,
   unchanged view identity, constraint reuse, and subscription ownership.
-- Phases A–C are implemented and iOS-validated on refactor/main.
+- Phases A–D are implemented and iOS-validated on refactor/main.
 
 ## Phase A — Named Modifier Snapshots
 - [x] Replace the nested (() -> () -> Void)? restoration factory with a named type.
@@ -31,19 +31,20 @@
 - [x] Profile larger keyed reorders before changing the reconciliation algorithm.
 
 ## Phase D — Naming and Handoff
-- [ ] Use consistent names for stored state, pending work, and cancellation slots.
-- [ ] Keep original public APIs and add no unnecessary abstraction layers.
-- [ ] Update consumer docs only when an observable contract changes.
-- [ ] Deliver and validate each phase as a focused commit with progress updates.
+- [x] Use consistent names for stored state, pending work, and cancellation slots.
+- [x] Keep original public APIs and add no unnecessary abstraction layers.
+- [x] Update consumer docs only when an observable contract changes.
+- [x] Deliver and validate each phase as a focused commit with progress updates.
 
 ## Acceptance Checklist
 - [x] Draft and index the second improvement plan.
 - [x] Remove nested restoration factories and magic string layout keys.
 - [x] Make keyed state ownership understandable from one type or entry point.
-- [ ] Pass existing regressions and add tests only for uncovered behavior.
-- [ ] Record workload counts/timings and verify no new replacement-view allocations.
-- [ ] Validate iOS and tvOS; retain explicit limits where platform support is absent.
-- [ ] Review the final diff for source compatibility and update status/results.
+- [x] Pass existing regressions and add tests only for uncovered behavior.
+- [x] Record workload counts/timings and verify no new replacement-view allocations.
+- [x] Validate iOS and document the unavailable tvOS destination.
+- [ ] Validate tvOS when Xcode can select its platform destination.
+- [x] Review the final diff for source compatibility and update status/results.
 
 ## References
 - [Modifier restoration](../../Sources/UIKit/SwiftUIKit/Base/Exts/FConfiguration+Modifiers.swift), [layout](../../Sources/UIKit/SwiftUIKit/Base/Exts/FConfiguration+Layout.swift), and [keyed items](../../Sources/UIKit/SwiftUIKit/Common/Components/Collection/FStack+Items.swift).

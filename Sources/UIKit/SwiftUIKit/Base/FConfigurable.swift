@@ -185,7 +185,7 @@ import SnapKit
     
     /// Flag indicating whether to clear all modifiers.
     var clearModifiers: Bool = false
-    var modifierSnapshots: [FModifierRestoring] = []
+    var appliedModifierSnapshots: [FModifierRestoring] = []
     var effectiveModifiers: [FModifier] {
         let inherited = clearModifiers ? [] : (owner?.superview?.configuration?.effectiveModifiers ?? [])
         return inherited + modifiers
@@ -201,10 +201,10 @@ import SnapKit
     public var offset: CGSize = .zero { didSet { invalidateLayout() } }
     
     /// The shadow configuration to apply.
-    public var shadow: CALayer.ShadowConfiguration? { didSet { layersNeedUpdate = true; owner?.setNeedsLayout() } }
+    public var shadow: CALayer.ShadowConfiguration? { didSet { invalidateLayers() } }
     
     /// The shape style to apply to the component, such as circle or rounded rectangle.
-    public var shape: FShape? { didSet { layersNeedUpdate = true; owner?.setNeedsLayout() } }
+    public var shape: FShape? { didSet { invalidateLayers() } }
     
     /// The background color to apply to the component.
     public var backgroundColor: UIColor = .clear { didSet { owner?.backgroundColor = backgroundColor } }
@@ -228,7 +228,10 @@ import SnapKit
     
     /// A closure for applying custom layout constraints using SnapKit.
     public var layoutConfiguration: ((_ make: ConstraintMaker, _ superview: UIView) -> Void)? {
-        didSet { customLayoutNeedsUpdate = true; invalidateLayout() }
+        didSet {
+            needsCustomLayoutUpdate = true
+            invalidateLayout()
+        }
     }
     
     /// Flag indicating whether to animate layer changes.
@@ -287,29 +290,34 @@ import SnapKit
         owner?.alpha = opacity
     }
 
-    private var layersNeedUpdate = true
-    private var lastLayerBounds: CGRect?
-    private var hadShape = false
-    private var hadShadow = false
-    var layoutNeedsUpdate = true
-    var customLayoutNeedsUpdate = true
+    private var needsLayerUpdate = true
+    private var appliedLayerBounds: CGRect?
+    private var hasAppliedShape = false
+    private var hasAppliedShadow = false
+    var needsLayoutUpdate = true
+    var needsCustomLayoutUpdate = true
     var isLayoutManagedByContainer = false { didSet { invalidateLayout() } }
     var ownedLayoutConstraints: [FLayoutConstraintKey: NSLayoutConstraint] = [:]
-    var customLayoutConstraints: [Constraint] = []
-    weak var layoutSuperview: UIView?
-    private var layoutUpdateScheduled = false
+    var ownedCustomConstraints: [Constraint] = []
+    weak var appliedLayoutParent: UIView?
+    private var isLayoutUpdateScheduled = false
 
     /// Batches chained layout changes until layout or the next main-queue turn.
     public func invalidateLayout() {
-        layoutNeedsUpdate = true
+        needsLayoutUpdate = true
         owner?.setNeedsLayout()
-        guard !layoutUpdateScheduled else { return }
-        layoutUpdateScheduled = true
+        guard !isLayoutUpdateScheduled else { return }
+        isLayoutUpdateScheduled = true
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            self.layoutUpdateScheduled = false
+            self.isLayoutUpdateScheduled = false
             self.applyLayout()
         }
+    }
+
+    private func invalidateLayers() {
+        needsLayerUpdate = true
+        owner?.setNeedsLayout()
     }
 
     /// Updates the layers of the target view based on the current configuration.
@@ -317,18 +325,18 @@ import SnapKit
     public func updateLayers(for target: UIView) {
         applyLayout()
         defer { layerConfiguration?(target) }
-        guard layersNeedUpdate || lastLayerBounds != target.bounds else { return }
-        layersNeedUpdate = false
-        lastLayerBounds = target.bounds
-        if shape == nil, hadShape {
+        guard needsLayerUpdate || appliedLayerBounds != target.bounds else { return }
+        needsLayerUpdate = false
+        appliedLayerBounds = target.bounds
+        if shape == nil, hasAppliedShape {
             target.layer.cornerRadius = 0
             target.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
                                          .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
             target.clipsToBounds = false
         }
-        if shadow == nil, hadShadow { target.layer.removeShadow() }
-        hadShape = shape != nil
-        hadShadow = shadow != nil
+        if shadow == nil, hasAppliedShadow { target.layer.removeShadow() }
+        hasAppliedShape = shape != nil
+        hasAppliedShadow = shadow != nil
         var shadowCornerRadius: CGFloat = 0
         var shadowCorners: UIRectCorner = .allCorners
         if let shape {

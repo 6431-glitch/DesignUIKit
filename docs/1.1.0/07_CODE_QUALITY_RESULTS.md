@@ -30,11 +30,17 @@
 - Single samples are diagnostic; no speedup is claimed and no algorithm changed.
 - Large hierarchy reorders remain a separate potential optimization.
 
+## Phase D
+- [x] Pass all 99 package tests after normalizing internal pending/applied-state names.
+- Public signatures and consumer update/binding contracts remain unchanged.
+- Existing property/single-item/reorder workloads still create no replacement views.
+
 ## Remaining Validation
 - [x] Phase B: typed layout keys and constraint topology preservation.
 - [x] Phase C: coherent keyed state and larger reorder measurements.
-- [ ] Phase D: naming audit, final full suite, and documentation review.
-- [ ] tvOS: install its platform before compilation/runtime verification.
+- [x] Phase D: naming audit, final full suite, and documentation review.
+- [ ] tvOS: SDK is listed, but explicit generic builds fail to select a destination;
+  Xcode reports tvOS 26.5 is not installed. Compilation/runtime remain unverified.
 
 ## Scope
 - Public signatures and observable update contracts remain the compatibility boundary.
