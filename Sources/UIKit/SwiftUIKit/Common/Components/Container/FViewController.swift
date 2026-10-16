@@ -40,6 +40,11 @@ import Foundation
         customConfiguration?(self)
     }
 
+    public func updateContent() {
+        guard superview != nil else { return }
+        attachContentViewControllerIfNeeded()
+    }
+
     public override func removeFromSuperview() {
         parentViewController = nil
         detachContentViewController()

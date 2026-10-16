@@ -1,0 +1,50 @@
+# Second Improvement Plan: Code Quality and Readability
+
+## State and Goal
+- Draft dated 2026-10-15, after first-pass phases 1–4 were committed on refactor/main.
+- First-pass validation: 89 iOS tests passed; tvOS was unverified and is now outside supported scope.
+- Goal: make update behavior easier to trace while preserving public signatures,
+  unchanged view identity, constraint reuse, and subscription ownership.
+- Phases A–D are implemented and iOS-validated on refactor/main.
+
+## Phase A — Named Modifier Snapshots
+- [x] Replace the nested (() -> () -> Void)? restoration factory with a named type.
+- [x] Make capture-original, capture-applied, and conditional-restore steps explicit.
+- [x] Share the inherited/local application loop without hiding their precedence.
+- [x] Document built-in restoration versus custom modifier cleanup ownership.
+- [x] Cover direct overrides, theme changes, removal, and repeated reparenting.
+
+## Phase B — Focused Layout Operations
+- [x] Replace string constraint identifiers in internal storage with a key enum.
+- [x] Split applyLayout into parent transition, desired rules, reconciliation,
+  and custom-constraint handling, with one clear responsibility per helper.
+- [x] Name the constraint-topology comparison instead of inlining it in the loop.
+- [x] Preserve active constraint identity when only constants change.
+- [x] Clarify existing FAxis-to-center-anchor mapping without breaking callers.
+
+## Phase C — Explicit Keyed Collection State
+- [x] Replace parallel view/model dictionaries with one coherent entry/state type.
+- [x] Isolate Any/AnyHashable casts at a documented internal boundary.
+- [x] Remove reliance on assignment clearing state followed by manual restoration.
+- [x] Separate ID validation, create/update decisions, and hierarchy reconciliation.
+- [x] Preserve duplicate rejection, equal-value skipping, focus, and selection.
+- [x] Profile larger keyed reorders before changing the reconciliation algorithm.
+
+## Phase D — Naming and Handoff
+- [x] Use consistent names for stored state, pending work, and cancellation slots.
+- [x] Keep original public APIs and add no unnecessary abstraction layers.
+- [x] Update consumer docs only when an observable contract changes.
+- [x] Deliver and validate each phase as a focused commit with progress updates.
+
+## Acceptance Checklist
+- [x] Draft and index the second improvement plan.
+- [x] Remove nested restoration factories and magic string layout keys.
+- [x] Make keyed state ownership understandable from one type or entry point.
+- [x] Pass existing regressions and add tests only for uncovered behavior.
+- [x] Record workload counts/timings and verify no new replacement-view allocations.
+- [x] Validate iOS and document the unavailable tvOS destination.
+- [x] Remove tvOS validation from scope: support discontinued by maintainer decision.
+- [x] Review the final diff for source compatibility and update status/results.
+
+## References
+- [Modifier restoration](../../Sources/UIKit/SwiftUIKit/Base/Exts/FConfiguration+Modifiers.swift), [layout](../../Sources/UIKit/SwiftUIKit/Base/Exts/FConfiguration+Layout.swift), and [keyed items](../../Sources/UIKit/SwiftUIKit/Common/Components/Collection/FStack+Items.swift).

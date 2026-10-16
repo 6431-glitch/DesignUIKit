@@ -8,6 +8,7 @@
 //  Supports configuration via fluent APIs and optional content flattening.
 //
 
+import UIKit
 import DesignCore
 
 /// A flexible vertical stack component that wraps and lays out multiple body components.
@@ -16,6 +17,7 @@ public final class FZStack: BaseView, FComponent {
     /// Optional closure for applying additional runtime customization after setup.
     public var customConfiguration: ((FZStack) -> Void)?
     /// The list of body components to be displayed in the stack.
+    private var installedContents: [UIView] = []
     public var contentViews: FBody
     
     /// Initializes a stack with an optional single body component.
@@ -45,14 +47,20 @@ public final class FZStack: BaseView, FComponent {
     public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         configuration?.didMoveToSuperview(superview, with: self)
-        contentViews.flatMap {
-            ($0 as? FForEach)?.content() ?? [$0]
-        }.forEach { view in
-            if view.superview !== self {
-                addSubview(view)
-            }
-        }
+        updateContent()
         customConfiguration?(self)
+    }
+
+    public func updateContent() {
+        let desired = contentViews.flatMap { ($0 as? FForEach)?.content() ?? [$0] }
+        let identities = Set(desired.map { ObjectIdentifier($0) })
+        installedContents.filter { !identities.contains(ObjectIdentifier($0)) }
+            .forEach { $0.removeFromSuperview() }
+        for view in desired {
+            if view.superview !== self { addSubview(view) }
+            bringSubviewToFront(view)
+        }
+        installedContents = desired
     }
 
     public override func layoutSubviews() {

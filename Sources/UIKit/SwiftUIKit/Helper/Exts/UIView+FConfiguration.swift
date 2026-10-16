@@ -20,7 +20,10 @@ import DesignCore
     /// Gets or sets the configuration object associated with the view.
     var configuration: FConfiguration? {
         get { Self.configuration[self] }
-        set { Self.configuration[self] = newValue }
+        set {
+            Self.configuration[self] = newValue
+            newValue?.owner = self
+        }
     }
 }
 

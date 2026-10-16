@@ -4,54 +4,42 @@ import UIKit
 
 @MainActor
 final class CommonCollectionSectionTest: XCTestCase {
-    func testSlidingGroupHeightRatio_whenNonAutoHeight_isIndependentOfCellCount() {
+    func testPreconfiguredLayout_preservesSpacingInsetsAndPaging() {
         let dimension = CommonCollection.Section.LayoutDimension(
-            itemWHRatio: 2,
-            autoHeight: false,
-            groupWidthRatio: 0.8,
-            numberItemsPerGroup: 3
+            itemSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)),
+            itemSpacing: 4,
+            groupSize: .init(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(120)),
+            groupSpacing: 16,
+            numberItemsPerGroup: 3,
+            sectionInset: .init(top: 2, left: 3, bottom: 5, right: 7),
+            pagingBehaviour: .groupPaging
         )
-        let sectionWithFewItems = CommonCollection.Section(cells: makeCells(count: 1))
-            .with(dimension: dimension)
-        let sectionWithManyItems = CommonCollection.Section(cells: makeCells(count: 99))
-            .with(dimension: dimension)
+        let sut = CommonCollection.Section(cells: makeCells(count: 99), layoutStyle: .preconfigured(dimension))
 
-        let fewItemsRatio = CommonCollection.Section.slidingGroupHeightRatio(for: sectionWithFewItems)
-        let manyItemsRatio = CommonCollection.Section.slidingGroupHeightRatio(for: sectionWithManyItems)
+        let layout = sut.layout()
 
-        XCTAssertEqual(fewItemsRatio, manyItemsRatio, accuracy: 0.000_1)
-        XCTAssertEqual(fewItemsRatio, 0.8 / 2 / 3, accuracy: 0.000_1)
+        XCTAssertEqual(layout.interGroupSpacing, 16)
+        XCTAssertEqual(layout.contentInsets, .init(top: 2, leading: 3, bottom: 5, trailing: 7))
+        XCTAssertEqual(layout.orthogonalScrollingBehavior, .groupPaging)
     }
-    
-    func testSlidingGroupHeightRatio_whenHorizontalAndMultipleItemsPerGroup_scalesPerItemWidth() {
-        let dimension = CommonCollection.Section.LayoutDimension(
-            itemWHRatio: 2.0 / 3.0,
-            autoHeight: false,
-            groupAxis: .horizontal,
-            groupWidthRatio: 1,
-            numberItemsPerGroup: 2
-        )
-        let section = CommonCollection.Section(cells: makeCells(count: 2))
-            .with(dimension: dimension)
 
-        let ratio = CommonCollection.Section.slidingGroupHeightRatio(for: section)
+    func testCustomizedLayout_receivesCurrentSection() {
+        var received: CommonCollection.Section?
+        let expected = NSCollectionLayoutSection(group: .horizontal(
+            layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(80)),
+            subitems: [NSCollectionLayoutItem(layoutSize: .init(
+                widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))) ]
+        ))
+        let sut = CommonCollection.Section(cells: makeCells(count: 2), layoutStyle: .customized { section in
+            received = section
+            return expected
+        })
 
-        XCTAssertEqual(ratio, 0.75, accuracy: 0.000_1)
+        XCTAssertTrue(sut.layout() === expected)
+        XCTAssertTrue(received === sut)
+        XCTAssertEqual(received?.cells.count, 2)
     }
-    
-    func testSlidingGroupHeightRatio_whenRatiosAreInvalid_fallsBackToFiniteDefaults() {
-        let dimension = CommonCollection.Section.LayoutDimension(
-            itemWHRatio: 0,
-            autoHeight: false,
-            groupWidthRatio: -1
-        )
-        let section = CommonCollection.Section(cells: makeCells(count: 5))
-            .with(dimension: dimension)
 
-        let ratio = CommonCollection.Section.slidingGroupHeightRatio(for: section)
-
-        XCTAssertEqual(ratio, 1, accuracy: 0.000_1)
-    }
 }
 
 private extension CommonCollectionSectionTest {

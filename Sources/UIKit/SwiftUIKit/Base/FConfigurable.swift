@@ -185,56 +185,66 @@ import SnapKit
     
     /// Flag indicating whether to clear all modifiers.
     var clearModifiers: Bool = false
+    var appliedModifierSnapshots: [FModifierRestoring] = []
+    var effectiveModifiers: [FModifier] {
+        let inherited = clearModifiers ? [] : (owner?.superview?.configuration?.effectiveModifiers ?? [])
+        return inherited + modifiers
+    }
     
     /// The width constraint value.
-    public var width: CGFloat?
+    public var width: CGFloat? { didSet { invalidateLayout() } }
     
     /// The height constraint value.
-    public var height: CGFloat?
+    public var height: CGFloat? { didSet { invalidateLayout() } }
     
     /// The offset to apply to the component's position.
-    public var offset: CGSize = .zero
+    public var offset: CGSize = .zero { didSet { invalidateLayout() } }
     
     /// The shadow configuration to apply.
-    public var shadow: CALayer.ShadowConfiguration?
+    public var shadow: CALayer.ShadowConfiguration? { didSet { invalidateLayers() } }
     
     /// The shape style to apply to the component, such as circle or rounded rectangle.
-    public var shape: FShape?
+    public var shape: FShape? { didSet { invalidateLayers() } }
     
     /// The background color to apply to the component.
-    public var backgroundColor: UIColor = .clear
+    public var backgroundColor: UIColor = .clear { didSet { owner?.backgroundColor = backgroundColor } }
     
     /// The directional padding to apply around the component inside its container.
     public var containerPadding: [FDirectionalRectEdge: CGFloat] = .init(
         uniqueKeysWithValues: FDirectionalRectEdge.all.rawEdges.map { ($0, 0) }
-    )
+    ) { didSet { invalidateLayout() } }
     
     /// The width-to-height ratio constraint to apply, if any.
-    public var ratio: CGFloat?
+    public var ratio: CGFloat? { didSet { invalidateLayout() } }
     
     /// The opacity of the component, ranging from 0.0 (transparent) to 1.0 (opaque).
-    public var opacity: CGFloat = 1
+    public var opacity: CGFloat = 1 { didSet { owner?.alpha = opacity } }
     
     /// Centering offset adjustments for horizontal and vertical axes.
-    public var centerOffset: [FAxis: CGFloat] = [:]
+    public var centerOffset: [FAxis: CGFloat] = [:] { didSet { invalidateLayout() } }
     
     /// The layout constraint priority for applying sizing and positioning rules.
-    public var layoutPriority: ConstraintPriority = .required
+    public var layoutPriority: ConstraintPriority = .required { didSet { invalidateLayout() } }
     
     /// A closure for applying custom layout constraints using SnapKit.
-    public var layoutConfiguration: ((_ make: ConstraintMaker, _ superview: UIView) -> Void)?
+    public var layoutConfiguration: ((_ make: ConstraintMaker, _ superview: UIView) -> Void)? {
+        didSet {
+            needsCustomLayoutUpdate = true
+            invalidateLayout()
+        }
+    }
     
     /// Flag indicating whether to animate layer changes.
     public var shoudAnimateLayerChanges: Bool = false
     
     /// Custom layer configuration closure.
-    public var layerConfiguration: ((UIView) -> Void)?
+    public var layerConfiguration: ((UIView) -> Void)? { didSet { owner?.setNeedsLayout() } }
     
     /// Flag indicating whether to ignore safe area constraints.
-    public var shouldIgnoreSafeArea: Bool = false
+    public var shouldIgnoreSafeArea: Bool = false { didSet { invalidateLayout() } }
     
     /// Flag indicating whether to constraint the component with its parent.
-    public var shouldConstraintWithParent: Bool = true
+    public var shouldConstraintWithParent: Bool = true { didSet { invalidateLayout() } }
     
     /// Weak reference to the owning view.
     public weak var owner: UIView?
@@ -258,61 +268,75 @@ import SnapKit
     /// Called before the component moves to a new superview.
     /// - Parameter newSuperview: The new superview the component will move to.
     func willMove(toSuperview newSuperview: UIView?) {
-        guard let newSuperview = newSuperview as? FBodyComponent else { return }
-        if !clearModifiers {
-            modifiers = (newSuperview.configuration?.modifiers ?? []) + modifiers
-        }
+        restoreModifiers()
     }
-    
+
     /// Called after the component has moved to a superview, applying layout and appearance configurations.
     /// - Parameters:
     ///   - superview: The superview the component moved to.
     ///   - target: The target component being configured.
     public func didMoveToSuperview(_ superview: UIView?, with target: FBodyComponent) {
-        guard let superview else { return }
-        modifiers.forEach { $0.body(target) }
-        target.backgroundColor = backgroundColor
-        target.alpha = opacity
-        if shouldConstraintWithParent {
-            target.snp.remakeConstraints {
-                let target: ConstraintRelatableTarget = shouldIgnoreSafeArea ? superview : superview.safeAreaLayoutGuide
-                if let centerOffset = centerOffset[.vertical] {
-                    $0.centerX.equalTo(superview.safeAreaLayoutGuide)
-                        .offset(centerOffset).priority(layoutPriority)
-                } else {
-                    if let padding = containerPadding[.leading] {
-                        $0.leading.equalTo(target).offset(offset.width + padding).priority(layoutPriority)
-                    }
-                    if let padding = containerPadding[.trailing] {
-                        $0.trailing.equalTo(target).offset(offset.width - padding).priority(layoutPriority)
-                    }
-                }
-                if let centerOffset = centerOffset[.horizontal] {
-                    $0.centerY.equalTo(superview.safeAreaLayoutGuide)
-                        .offset(centerOffset).priority(layoutPriority)
-                } else {
-                    if let padding = containerPadding[.top] {
-                        $0.top.equalTo(target).offset(offset.height + padding).priority(layoutPriority)
-                    }
-                    if let padding = containerPadding[.bottom] {
-                        $0.bottom.equalTo(target).offset(offset.height - padding).priority(layoutPriority)
-                    }
-                }
-            }
-        }
-        target.snp.makeConstraints {
-            if let width, width > 0 { $0.width.equalTo(width).priority(layoutPriority) }
-            if let height, height > 0 { $0.height.equalTo(height).priority(layoutPriority) }
-            if let ratio { $0.width.equalTo(target.snp.height).multipliedBy(ratio).priority(layoutPriority) }
-        }
-        if let layoutConfiguration {
-            target.snp.makeConstraints { layoutConfiguration($0, superview) }
+        owner = target
+        guard superview != nil else { return }
+        applyModifiers(to: target)
+        applyAppearance()
+        invalidateLayout()
+        applyLayout()
+    }
+
+    /// Applies stored appearance without rebuilding content or dispatching lifecycle events.
+    public func applyAppearance() {
+        owner?.backgroundColor = backgroundColor
+        owner?.alpha = opacity
+    }
+
+    private var needsLayerUpdate = true
+    private var appliedLayerBounds: CGRect?
+    private var hasAppliedShape = false
+    private var hasAppliedShadow = false
+    var needsLayoutUpdate = true
+    var needsCustomLayoutUpdate = true
+    var isLayoutManagedByContainer = false { didSet { invalidateLayout() } }
+    var ownedLayoutConstraints: [FLayoutConstraintKey: NSLayoutConstraint] = [:]
+    var ownedCustomConstraints: [Constraint] = []
+    weak var appliedLayoutParent: UIView?
+    private var isLayoutUpdateScheduled = false
+
+    /// Batches chained layout changes until layout or the next main-queue turn.
+    public func invalidateLayout() {
+        needsLayoutUpdate = true
+        owner?.setNeedsLayout()
+        guard !isLayoutUpdateScheduled else { return }
+        isLayoutUpdateScheduled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.isLayoutUpdateScheduled = false
+            self.applyLayout()
         }
     }
-    
+
+    private func invalidateLayers() {
+        needsLayerUpdate = true
+        owner?.setNeedsLayout()
+    }
+
     /// Updates the layers of the target view based on the current configuration.
     /// - Parameter target: The view to update.
     public func updateLayers(for target: UIView) {
+        applyLayout()
+        defer { layerConfiguration?(target) }
+        guard needsLayerUpdate || appliedLayerBounds != target.bounds else { return }
+        needsLayerUpdate = false
+        appliedLayerBounds = target.bounds
+        if shape == nil, hasAppliedShape {
+            target.layer.cornerRadius = 0
+            target.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
+                                         .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            target.clipsToBounds = false
+        }
+        if shadow == nil, hasAppliedShadow { target.layer.removeShadow() }
+        hasAppliedShape = shape != nil
+        hasAppliedShadow = shadow != nil
         var shadowCornerRadius: CGFloat = 0
         var shadowCorners: UIRectCorner = .allCorners
         if let shape {
@@ -320,6 +344,8 @@ import SnapKit
             apply {
                 switch shape {
                 case .circle:
+                    target.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
+                                                 .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
                     shadowCornerRadius = min(target.bounds.width, target.bounds.height) / 2
                     target.layer.cornerRadius = shadowCornerRadius
                 case .roundedRectangle(let cornerRadius, let corners):
@@ -359,7 +385,6 @@ import SnapKit
                 )
             }
         }
-        layerConfiguration?(target)
     }
     
     /// Applies the given animation configuration when executing the provided animation block.

@@ -19,6 +19,9 @@ public extension FConfigurable {
     /// - Returns: Self for chaining.
     @discardableResult func modified(with modifier: FModifier) -> Self {
         configuration?.modifiers.append(modifier)
+        if let view = self as? FBodyComponent, view.superview != nil {
+            configuration?.applyModifiers(to: view)
+        }
         return self
     }
     
@@ -26,7 +29,9 @@ public extension FConfigurable {
     ///
     /// - Returns: Self for chaining.
     @discardableResult func clearModifiers() -> Self {
+        configuration?.restoreModifiers()
         configuration?.modifiers = []
+        configuration?.clearModifiers = true
         return self
     }
     

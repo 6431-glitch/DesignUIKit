@@ -22,12 +22,20 @@ import DesignExts
     /// A closure for applying custom configuration to the component.
     var customConfiguration: ((Self) -> Void)? { get set }
     func reload()
+    /// Updates owned content explicitly, without simulating UIKit lifecycle events.
+    func updateContent()
 }
 
 extension FComponent where Self: UIView {
+    /// Leaf components retain their UIKit-managed subviews on reload.
+    public func updateContent() { }
+
     public func reload() {
-        subviews.forEach { $0.removeFromSuperview() }
-        didMoveToSuperview()
+        if let target = self as? FBodyComponent {
+            configuration?.didMoveToSuperview(superview, with: target)
+        }
+        updateContent()
+        customConfiguration?(self)
     }
 }
 

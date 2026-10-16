@@ -16,7 +16,9 @@ import Foundation
     /// Applies a transformation to the given `FBodyComponent`.
     ///
     /// - Parameter content: The original body component to be modified.
-    /// - Returns: A new `FBodyComponent` after applying the transformation.
+    /// - Returns: The supplied component after mutation. Replacement views are ignored.
+    /// Custom modifiers must be idempotent and own cleanup of their side effects;
+    /// built-in inherited modifiers restore their previous values on reparenting.
     @discardableResult
     func body(_ content: FBodyComponent) -> FBodyComponent
 }
